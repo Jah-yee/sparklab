@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>评委打分牌 - Asterisk 风格</title>
+  <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+      
+      body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          background: #fafafa;
+          padding: 20px;
+          min-height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+      
+      .scoring-card {
+          background: white;
+          border: 2px solid #010101;
+          border-radius: 0;
+          padding: 40px;
+          max-width: 500px;
+          width: 100%;
+          box-shadow: 8px 8px 0px #010101;
+      }
+      
+      .header {
+          text-align: center;
+          margin-bottom: 40px;
+          border-bottom: 2px solid #010101;
+          padding-bottom: 20px;
+      }
+      
+      .logo {
+          font-size: 32px;
+          font-weight: 700;
+          color: #010101;
+          margin-bottom: 8px;
+          letter-spacing: -1px;
+      }
+      
+      .asterisk {
+          color: #010101;
+          font-size: 24px;
+          margin: 0 8px;
+      }
+      
+      .subtitle {
+          font-size: 14px;
+          font-weight: 400;
+          color: #666;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+      }
+      
+      .judge-info {
+          margin-bottom: 30px;
+      }
+      
+      .judge-name {
+          font-size: 18px;
+          font-weight: 600;
+          color: #010101;
+          margin-bottom: 5px;
+      }
+      
+      .judge-title {
+          font-size: 14px;
+          color: #666;
+          font-weight: 400;
+      }
+      
+      .scoring-section {
+          margin-bottom: 30px;
+      }
+      
+      .project-name {
+          font-size: 20px;
+          font-weight: 600;
+          color: #010101;
+          margin-bottom: 20px;
+          text-align: center;
+          padding: 15px;
+          border: 1px solid #010101;
+          background: #f8f8f8;
+      }
+      
+      .criteria {
+          margin-bottom: 25px;
+      }
+      
+      .criteria-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #010101;
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+      }
+      
+      .criteria-title::before {
+          content: "✻";
+          margin-right: 8px;
+          font-size: 14px;
+      }
+      
+      .score-buttons {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+      }
+      
+      .score-btn {
+          width: 40px;
+          height: 40px;
+          border: 2px solid #010101;
+          background: white;
+          color: #010101;
+          font-weight: 600;
+          font-size: 16px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      
+      .score-btn:hover {
+          background: #010101;
+          color: white;
+      }
+      
+      .score-btn.selected {
+          background: #010101;
+          color: white;
+      }
+      
+      .total-section {
+          border-top: 2px solid #010101;
+          padding-top: 20px;
+          text-align: center;
+      }
+      
+      .total-label {
+          font-size: 16px;
+          font-weight: 600;
+          color: #010101;
+          margin-bottom: 10px;
+      }
+      
+      .total-score {
+          font-size: 36px;
+          font-weight: 700;
+          color: #010101;
+          border: 3px solid #010101;
+          padding: 15px 30px;
+          display: inline-block;
+          min-width: 120px;
+      }
+      
+      .comments {
+          margin-top: 30px;
+      }
+      
+      .comments-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #010101;
+          margin-bottom: 10px;
+      }
+      
+      .comments-box {
+          width: 100%;
+          min-height: 80px;
+          border: 2px solid #010101;
+          padding: 15px;
+          font-family: inherit;
+          font-size: 14px;
+          resize: vertical;
+          background: white;
+      }
+      
+      .comments-box:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(1, 1, 1, 0.1);
+      }
+      
+      @media (max-width: 600px) {
+          .scoring-card {
+              padding: 20px;
+              margin: 10px;
+          }
+          
+          .score-buttons {
+              justify-content: center;
+          }
+      }
+  </style>
+</head>
+<body>
+  <div class="scoring-card">
+      <div class="header">
+          <div class="logo">
+              ASTERISK<span class="asterisk">✻</span>JUDGE
+          </div>
+          <div class="subtitle">Evaluation Scorecard</div>
+      </div>
+      
+      <div class="judge-info">
+          <div class="judge-name">评委姓名：_________________</div>
+          <div class="judge-title">职位/机构：_________________</div>
+      </div>
+      
+      <div class="scoring-section">
+          <div class="project-name">
+              项目名称：_________________
+          </div>
+          
+          <div class="criteria">
+              <div class="criteria-title">创新性 Innovation</div>
+              <div class="score-buttons">
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">1</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">2</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">3</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">4</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">5</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">6</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">7</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">8</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">9</button>
+                  <button class="score-btn" onclick="selectScore(this, 'innovation')">10</button>
+              </div>
+          </div>
+          
+          <div class="criteria">
+              <div class="criteria-title">技术实现 Technical Implementation</div>
+              <div class="score-buttons">
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">1</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">2</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">3</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">4</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">5</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">6</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">7</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">8</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">9</button>
+                  <button class="score-btn" onclick="selectScore(this, 'technical')">10</button>
+              </div>
+          </div>
+          
+          <div class="criteria">
+              <div class="criteria-title">商业价值 Business Value</div>
+              <div class="score-buttons">
+                  <button class="score-btn" onclick="selectScore(this, 'business')">1</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">2</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">3</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">4</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">5</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">6</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">7</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">8</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">9</button>
+                  <button class="score-btn" onclick="selectScore(this, 'business')">10</button>
+              </div>
+          </div>
+          
+          <div class="criteria">
+              <div class="criteria-title">团队表现 Team Performance</div>
+              <div class="score-buttons">
+                  <button class="score-btn" onclick="selectScore(this, 'team')">1</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">2</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">3</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">4</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">5</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">6</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">7</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">8</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">9</button>
+                  <button class="score-btn" onclick="selectScore(this, 'team')">10</button>
+              </div>
+          </div>
+      </div>
+      
+      <div class="total-section">
+          <div class="total-label">总分 TOTAL SCORE</div>
+          <div class="total-score" id="totalScore">0</div>
+      </div>
+      
+      <div class="comments">
+          <div class="comments-title">评委意见 Comments</div>
+          <textarea class="comments-box" placeholder="请在此处填写您的评价和建议..."></textarea>
+      </div>
+  </div>
+  
+  <script>
+      const scores = {
+          innovation: 0,
+          technical: 0,
+          business: 0,
+          team: 0
+      };
+      
+      function selectScore(button, category) {
+          // Remove selected class from all buttons in this category
+          const categoryButtons = button.parentElement.querySelectorAll('.score-btn');
+          categoryButtons.forEach(btn => btn.classList.remove('selected'));
+          
+          // Add selected class to clicked button
+          button.classList.add('selected');
+          
+          // Update score
+          scores[category] = parseInt(button.textContent);
+          
+          // Update total
+          updateTotal();
+      }
+      
+      function updateTotal() {
+          const total = Object.values(scores).reduce((sum, score) => sum + score, 0);
+          document.getElementById('totalScore').textContent = total;
+      }
+  </script>
+</body>
+</html>

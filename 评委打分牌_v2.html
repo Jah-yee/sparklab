@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spark Lab 评委打分牌</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          background: #fafafa;
+          padding: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          gap: 40px;
+      }
+
+      .main-container {
+          display: flex;
+          gap: 40px;
+          align-items: flex-start;
+          max-width: 1200px;
+          width: 100%;
+      }
+
+      .scoring-card {
+          width: 300px;
+          height: 400px;
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+          position: relative;
+          overflow: hidden;
+          border: 3px solid #ff5300;
+          flex-shrink: 0;
+      }
+
+      .card-header {
+          background: #ff5300;
+          color: white;
+          padding: 15px;
+          text-align: center;
+          position: relative;
+      }
+
+      .asterisk-logo {
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: -0.5px;
+      }
+
+      .asterisk-symbol {
+          position: absolute;
+          right: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 20px;
+          opacity: 0.8;
+      }
+
+      .card-content {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 40px 20px;
+          background: white;
+          height: 280px;
+      }
+
+      .score-display {
+          font-size: 120px;
+          font-weight: 700;
+          color: #010101;
+          text-align: center;
+          line-height: 1;
+          transition: all 0.3s ease;
+      }
+
+      .score-display.orange {
+          color: #ff5300;
+      }
+
+      .icon-display {
+          font-size: 100px;
+          text-align: center;
+          transition: all 0.3s ease;
+      }
+
+      .pass { color: #22c55e; }
+      .fail { color: #ef4444; }
+      .thumb-up { color: #22c55e; }
+      .thumb-down { color: #ef4444; }
+      .check { color: #22c55e; }
+      .cross { color: #ef4444; }
+
+      .card-footer {
+          background: #010101;
+          color: white;
+          padding: 8px 15px;
+          text-align: center;
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+      }
+
+      .controls {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          flex: 1;
+          max-width: 600px;
+          background: white;
+          border: 2px solid #010101;
+          box-shadow: 8px 8px 0px #010101;
+          padding: 30px;
+          height: 400px;
+      }
+
+      .control-title {
+          font-size: 20px;
+          font-weight: 700;
+          color: #010101;
+          text-align: center;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          margin-bottom: 20px;
+      }
+
+      .control-content {
+          display: flex;
+          gap: 30px;
+          flex: 1;
+      }
+
+      .mode-selector {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          min-width: 150px;
+          flex-shrink: 0;
+      }
+
+      .mode-btn {
+          padding: 12px 16px;
+          border: 2px solid #010101;
+          background: white;
+          color: #010101;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 14px;
+          transition: all 0.2s ease;
+          font-family: 'Inter', sans-serif;
+          text-align: left;
+          display: flex;
+          align-items: center;
+      }
+
+      .mode-btn::before {
+          content: "✻";
+          margin-right: 8px;
+          font-size: 12px;
+      }
+
+      .mode-btn:hover {
+          background: #010101;
+          color: white;
+      }
+
+      .mode-btn.active {
+          background: #010101;
+          color: white;
+      }
+
+      .control-area {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+      }
+
+      .control-section-title {
+          font-size: 14px;
+          font-weight: 600;
+          color: #010101;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          border-bottom: 2px solid #010101;
+          padding-bottom: 6px;
+      }
+
+      .control-group {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+      }
+
+      .control-btn {
+          width: 45px;
+          height: 45px;
+          border: 2px solid #010101;
+          background: white;
+          color: #010101;
+          font-weight: 600;
+          font-size: 16px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-family: 'Inter', sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .control-btn:hover {
+          background: #010101;
+          color: white;
+      }
+
+      .control-btn.active {
+          background: #010101;
+          color: white;
+      }
+
+      .number-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 8px;
+          width: 100%;
+          max-width: 280px;
+      }
+
+      .text-btn {
+          width: auto;
+          padding: 0 20px;
+          min-width: 80px;
+      }
+
+      @media (max-width: 1000px) {
+          .main-container {
+              flex-direction: column;
+              align-items: center;
+              gap: 20px;
+          }
+          
+          .controls {
+              max-width: 500px;
+              width: 100%;
+              height: auto;
+          }
+          
+          .control-content {
+              flex-direction: column;
+              gap: 20px;
+          }
+          
+          .mode-selector {
+              min-width: auto;
+              width: 100%;
+              flex-direction: row;
+              flex-wrap: wrap;
+          }
+      }
+
+      @media (max-width: 600px) {
+          body {
+              padding: 10px;
+          }
+          
+          .main-container {
+              gap: 15px;
+          }
+          
+          .scoring-card {
+              width: 280px;
+              height: 380px;
+          }
+          
+          .score-display {
+              font-size: 100px;
+          }
+          
+          .icon-display {
+              font-size: 80px;
+          }
+          
+          .controls {
+              padding: 20px;
+          }
+          
+          .control-btn {
+              width: 40px;
+              height: 40px;
+              font-size: 14px;
+          }
+          
+          .number-grid {
+              max-width: 240px;
+          }
+      }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+      <div class="scoring-card">
+          <div class="card-header">
+              <div class="asterisk-logo">SPARK LAB</div>
+              <div class="asterisk-symbol">✻</div>
+          </div>
+          
+          <div class="card-content">
+              <div id="display" class="score-display">5</div>
+          </div>
+          
+          <div class="card-footer">
+              Hit me for a DARE
+          </div>
+      </div>
+
+      <div class="controls">
+          <div class="control-title">评分系统</div>
+          
+          <div class="control-content">
+              <div class="mode-selector">
+                  <button class="mode-btn active" onclick="setMode('numbers')">数字评分</button>
+                  <button class="mode-btn" onclick="setMode('pass')">通过/不通过</button>
+                  <button class="mode-btn" onclick="setMode('thumbs')">拇指</button>
+                  <button class="mode-btn" onclick="setMode('symbols')">符号</button>
+              </div>
+
+              <div class="control-area">
+                  <div id="number-controls" class="control-group">
+                      <div class="control-section-title">分数选择</div>
+                      <div class="number-grid">
+                          <button class="control-btn" onclick="setScore('1')">1</button>
+                          <button class="control-btn" onclick="setScore('2')">2</button>
+                          <button class="control-btn" onclick="setScore('3')">3</button>
+                          <button class="control-btn" onclick="setScore('4')">4</button>
+                          <button class="control-btn active" onclick="setScore('5')">5</button>
+                          <button class="control-btn" onclick="setScore('6')">6</button>
+                          <button class="control-btn" onclick="setScore('7')">7</button>
+                          <button class="control-btn" onclick="setScore('8')">8</button>
+                          <button class="control-btn" onclick="setScore('9')">9</button>
+                          <button class="control-btn" onclick="setScore('10')">10</button>
+                      </div>
+                  </div>
+
+                  <div id="pass-controls" class="control-group" style="display: none;">
+                      <div class="control-section-title">通过评定</div>
+                      <div style="display: flex; gap: 8px;">
+                          <button class="control-btn text-btn" onclick="setIcon('PASS', 'pass')">通过</button>
+                          <button class="control-btn text-btn" onclick="setIcon('FAIL', 'fail')">不通过</button>
+                      </div>
+                  </div>
+
+                  <div id="thumb-controls" class="control-group" style="display: none;">
+                      <div class="control-section-title">拇指评价</div>
+                      <div style="display: flex; gap: 8px;">
+                          <button class="control-btn" onclick="setIcon('👍', 'thumb-up')">👍</button>
+                          <button class="control-btn" onclick="setIcon('👎', 'thumb-down')">👎</button>
+                      </div>
+                  </div>
+
+                  <div id="symbol-controls" class="control-group" style="display: none;">
+                      <div class="control-section-title">符号评价</div>
+                      <div style="display: flex; gap: 8px;">
+                          <button class="control-btn" onclick="setIcon('✓', 'check')">✓</button>
+                          <button class="control-btn" onclick="setIcon('✗', 'cross')">✗</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <script>
+      let currentMode = 'numbers';
+      let currentValue = '5';
+
+      function setMode(mode) {
+          // 更新模式按钮状态
+          document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+          event.target.classList.add('active');
+          
+          // 隐藏所有控制组
+          document.querySelectorAll('.control-group').forEach(group => {
+              group.style.display = 'none';
+          });
+          
+          // 显示对应的控制组
+          currentMode = mode;
+          switch(mode) {
+              case 'numbers':
+                  document.getElementById('number-controls').style.display = 'flex';
+                  document.getElementById('number-controls').style.flexDirection = 'column';
+                  setScore('5');
+                  break;
+              case 'pass':
+                  document.getElementById('pass-controls').style.display = 'flex';
+                  document.getElementById('pass-controls').style.flexDirection = 'column';
+                  setIcon('PASS', 'pass');
+                  break;
+              case 'thumbs':
+                  document.getElementById('thumb-controls').style.display = 'flex';
+                  document.getElementById('thumb-controls').style.flexDirection = 'column';
+                  setIcon('👍', 'thumb-up');
+                  break;
+              case 'symbols':
+                  document.getElementById('symbol-controls').style.display = 'flex';
+                  document.getElementById('symbol-controls').style.flexDirection = 'column';
+                  setIcon('✓', 'check');
+                  break;
+          }
+      }
+
+      function setScore(score) {
+          const display = document.getElementById('display');
+          display.textContent = score;
+          display.className = 'score-display';
+          if (score >= 8) {
+              display.classList.add('orange');
+          }
+          currentValue = score;
+          
+          // 更新按钮状态
+          document.querySelectorAll('#number-controls .control-btn').forEach(btn => {
+              btn.classList.remove('active');
+              if (btn.textContent === score) {
+                  btn.classList.add('active');
+              }
+          });
+      }
+
+      function setIcon(icon, className) {
+          const display = document.getElementById('display');
+          display.textContent = icon;
+          display.className = 'icon-display ' + className;
+          currentValue = icon;
+          
+          // 更新按钮状态
+          const currentControls = document.querySelector(`#${currentMode === 'pass' ? 'pass' : currentMode === 'thumbs' ? 'thumb' : 'symbol'}-controls`);
+          if (currentControls) {
+              currentControls.querySelectorAll('.control-btn').forEach(btn => {
+                  btn.classList.remove('active');
+              });
+              event.target.classList.add('active');
+          }
+      }
+
+      // 键盘快捷键支持
+      document.addEventListener('keydown', function(e) {
+          if (currentMode === 'numbers' && e.key >= '0' && e.key <= '9') {
+              const num = e.key === '0' ? '10' : e.key;
+              if (num <= 10) {
+                  setScore(num);
+              }
+          }
+      });
+  </script>
+</body>
+</html>
