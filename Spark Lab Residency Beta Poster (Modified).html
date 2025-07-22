@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spark Lab Residency Beta Poster</title>
+  <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;700&display=swap');
+      
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+      
+      body {
+          background: #1a1a1a;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          font-family: 'Inter', sans-serif;
+      }
+      
+      .poster {
+          width: 800px;
+          height: 1200px;
+          max-width: 90vw;
+          max-height: 90vh;
+          background: linear-gradient(135deg, #f7f3f0 0%, #e8e4e1 100%);
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      }
+      
+      /* Background texture */
+      .poster::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: 
+              repeating-linear-gradient(
+                  45deg,
+                  transparent,
+                  transparent 100px,
+                  rgba(255,255,255,.02) 100px,
+                  rgba(255,255,255,.02) 200px
+              );
+          pointer-events: none;
+      }
+      
+      /* Noise texture */
+      .poster::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0.03;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+          pointer-events: none;
+      }
+      
+      .content {
+          position: relative;
+          z-index: 1;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          padding: 80px 60px;
+      }
+      
+      /* Corner accent */
+      .corner-accent {
+          position: absolute;
+          top: 40px;
+          right: 40px;
+          width: 120px;
+          height: 120px;
+          background: #FF6B35;
+          clip-path: polygon(100% 0, 100% 100%, 0 0);
+          opacity: 0.1;
+      }
+      
+      /* Title section */
+      .title-section {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          position: relative;
+      }
+      
+      .spark {
+          font-size: 32px;
+          font-weight: 600;
+          letter-spacing: 8px;
+          color: #FF6B35;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          opacity: 0.9;
+      }
+      
+      .lab {
+          font-size: 140px;
+          font-weight: 700;
+          letter-spacing: -5px;
+          color: #1a1a1a;
+          line-height: 0.9;
+          margin-bottom: 30px;
+          text-transform: uppercase;
+      }
+      
+      .residency {
+          font-size: 72px;
+          font-weight: 400;
+          letter-spacing: 8px;
+          color: #1a1a1a;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          position: relative;
+      }
+      
+      .residency::after {
+          content: '';
+          position: absolute;
+          bottom: -10px;
+          left: 0;
+          width: 200px;
+          height: 3px;
+          background: #FF6B35;
+      }
+      
+      .beta-container {
+          display: flex;
+          align-items: baseline;
+          gap: 15px;
+          margin-top: 40px;
+      }
+      
+      .in {
+          font-size: 36px;
+          font-style: italic;
+          color: #FF6B35;
+          font-weight: 300;
+      }
+      
+      .beta {
+          font-size: 84px;
+          font-weight: 600;
+          letter-spacing: -2px;
+          color: #1a1a1a;
+          position: relative;
+      }
+      
+      /* Schedule section */
+      .schedule-section {
+          margin: 60px 0;
+          padding: 40px;
+          background: rgba(255,255,255,0.5);
+          backdrop-filter: blur(10px);
+          border-radius: 20px;
+          border: 1px solid rgba(255,255,255,0.8);
+      }
+      
+      .schedule-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 30px;
+      }
+      
+      .schedule-item {
+          text-align: center;
+          padding: 20px;
+          border-radius: 10px;
+          background: rgba(255,255,255,0.6);
+          transition: transform 0.3s ease;
+      }
+      
+      .schedule-item:hover {
+          transform: translateY(-5px);
+      }
+      
+      .schedule-label {
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 2px;
+          color: #FF6B35;
+          text-transform: uppercase;
+          margin-bottom: 8px;
+      }
+      
+      .schedule-date {
+          font-size: 24px;
+          font-weight: 600;
+          color: #1a1a1a;
+          font-family: 'Noto Serif SC', serif;
+      }
+      
+      /* Visual element */
+      .visual-section {
+          margin: 40px 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: relative;
+      }
+      
+      .circuit-pattern {
+          width: 300px;
+          height: 200px;
+          position: relative;
+      }
+      
+      .circuit-svg {
+          width: 100%;
+          height: 100%;
+          opacity: 0.8;
+      }
+      
+      /* Footer */
+      .footer {
+          margin-top: auto;
+          text-align: center;
+          padding-top: 40px;
+      }
+      
+      .footer-text {
+          font-size: 16px;
+          font-weight: 400;
+          letter-spacing: 3px;
+          color: #666;
+          text-transform: uppercase;
+          position: relative;
+          display: inline-block;
+          padding: 0 20px;
+      }
+      
+      .footer-text::before,
+      .footer-text::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          width: 40px;
+          height: 1px;
+          background: #999;
+      }
+      
+      .footer-text::before {
+          left: -50px;
+      }
+      
+      .footer-text::after {
+          right: -50px;
+      }
+      
+      /* Decorative elements */
+      .float-element {
+          position: absolute;
+          width: 100px;
+          height: 100px;
+          background: #FF6B35;
+          opacity: 0.05;
+          border-radius: 50%;
+          filter: blur(40px);
+      }
+      
+      .float-1 {
+          top: 20%;
+          left: -50px;
+          width: 150px;
+          height: 150px;
+      }
+      
+      .float-2 {
+          bottom: 30%;
+          right: -50px;
+          width: 120px;
+          height: 120px;
+      }
+      
+      /* Chinese text styling */
+      .chinese {
+          font-family: 'Noto Serif SC', serif;
+          font-weight: 400;
+      }
+  </style>
+</head>
+<body>
+  <div class="poster">
+      <div class="float-element float-1"></div>
+      <div class="float-element float-2"></div>
+      <div class="corner-accent"></div>
+      
+      <div class="content">
+          <div class="title-section">
+              <div class="spark">SPARK</div>
+              <div class="lab">LAB</div>
+              <div class="residency">RESIDENCY</div>
+              <div class="beta-container">
+                  <span class="in">in</span>
+                  <span class="beta">BETA</span>
+              </div>
+          </div>
+          
+          <div class="schedule-section">
+              <div class="schedule-grid">
+                  <div class="schedule-item">
+                      <div class="schedule-label">Pre-hack</div>
+                      <div class="schedule-date">8.11 - 8.12</div>
+                  </div>
+                  <div class="schedule-item">
+                      <div class="schedule-label">Residency</div>
+                      <div class="schedule-date chinese">6 weeks<br/>从十月份</div>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="visual-section">
+              <div class="circuit-pattern">
+                  <svg class="circuit-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                      <!-- Circuit board pattern -->
+                      <defs>
+                          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:0.3" />
+                              <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:0.1" />
+                          </linearGradient>
+                      </defs>
+                      
+                      <!-- Main paths -->
+                      <path d="M50 50 L100 50 L100 100 L200 100 L200 50 L250 50" stroke="#FF6B35" stroke-width="2" fill="none" opacity="0.5"/>
+                      <path d="M50 150 L100 150 L100 100" stroke="#FF6B35" stroke-width="2" fill="none" opacity="0.5"/>
+                      <path d="M150 50 L150 100 L150 150 L200 150 L250 150" stroke="#FF6B35" stroke-width="2" fill="none" opacity="0.5"/>
+                      
+                      <!-- Nodes -->
+                      <circle cx="50" cy="50" r="8" fill="#FF6B35" opacity="0.8"/>
+                      <circle cx="100" cy="50" r="5" fill="#1a1a1a" opacity="0.6"/>
+                      <circle cx="150" cy="50" r="5" fill="#1a1a1a" opacity="0.6"/>
+                      <circle cx="200" cy="50" r="5" fill="#1a1a1a" opacity="0.6"/>
+                      <circle cx="250" cy="50" r="8" fill="#FF6B35" opacity="0.8"/>
+                      
+                      <circle cx="50" cy="150" r="8" fill="#FF6B35" opacity="0.8"/>
+                      <circle cx="100" cy="150" r="5" fill="#1a1a1a" opacity="0.6"/>
+                      <circle cx="150" cy="150" r="5" fill="#1a1a1a" opacity="0.6"/>
+                      <circle cx="200" cy="150" r="5" fill="#1a1a1a" opacity="0.6"/>
+                      <circle cx="250" cy="150" r="8" fill="#FF6B35" opacity="0.8"/>
+                      
+                      <circle cx="100" cy="100" r="10" fill="url(#grad1)"/>
+                      <circle cx="150" cy="100" r="10" fill="url(#grad1)"/>
+                      <circle cx="200" cy="100" r="10" fill="url(#grad1)"/>
+                      
+                      <!-- Central element -->
+                      <rect x="130" y="80" width="40" height="40" fill="none" stroke="#FF6B35" stroke-width="1" opacity="0.3"/>
+                      <rect x="140" y="90" width="20" height="20" fill="#FF6B35" opacity="0.2"/>
+                  </svg>
+              </div>
+          </div>
+          
+          <div class="footer">
+              <div class="footer-text">Tell You More Next Week</div>
+          </div>
+      </div>
+  </div>
+</body>
+</html>
