@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark Lab Shanghai</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2a2a2a;
+            font-family: 'Courier New', monospace;
+            color: #999;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            padding: 30px;
+        }
+
+        /* Header Tags - Improved spacing */
+        .header-tag {
+            position: absolute;
+            background: transparent;
+            border: 1px solid rgba(120, 120, 120, 0.4);
+            padding: 10px 24px;
+            font-size: 10px;
+            letter-spacing: 4px;
+            color: #888;
+        }
+
+        .tag-left {
+            top: 20px;
+            left: 60px;
+        }
+
+        .tag-right {
+            top: 20px;
+            right: 60px;
+        }
+
+        /* Info Box - Better positioning */
+        .info-box {
+            position: absolute;
+            top: 65px;
+            right: 60px;
+            background: transparent;
+            border: 1px solid rgba(120, 120, 120, 0.4);
+            padding: 20px 28px;
+            font-size: 9px;
+            line-height: 2;
+            letter-spacing: 1.5px;
+            color: #888;
+            min-width: 520px;
+        }
+
+        /* Central composition area */
+        .central-stage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            height: 400px;
+        }
+
+        /* Main title with better spacing */
+        .main-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .title-spark {
+            background: linear-gradient(90deg, #ff6835 0%, #ff8553 100%);
+            color: #1a1a1a;
+            padding: 10px 50px 10px 80px;
+            display: inline-block;
+            position: relative;
+            clip-path: polygon(30px 0, 100% 0, calc(100% - 30px) 100%, 0 100%);
+            margin-right: -15px;
+        }
+
+        .title-lab {
+            color: #888;
+            display: inline-block;
+            padding-left: 35px;
+        }
+
+        /* Vertical text - properly spaced */
+        .vertical-left {
+            position: absolute;
+            left: -180px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 120px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            color: #666;
+            transform-origin: center;
+        }
+
+        .vertical-right {
+            position: absolute;
+            right: -180px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 120px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            color: #666;
+            transform-origin: center;
+        }
+
+        /* Circle - proper z-index and positioning */
+        .circle-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110px;
+            height: 110px;
+            border: 6px solid #666;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: 900;
+            color: #666;
+            background: #2a2a2a;
+            z-index: 20;
+        }
+
+        /* Bottom left section */
+        .bottom-left {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            font-size: 10px;
+            letter-spacing: 3px;
+            line-height: 2.2;
+        }
+
+        .section-label {
+            color: #666;
+            font-size: 9px;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            letter-spacing: 4px;
+            color: #999;
+        }
+
+        /* Bottom center section */
+        .bottom-center {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 2px;
+            line-height: 2;
+        }
+
+        .project-id {
+            margin-bottom: 20px;
+            color: #888;
+        }
+
+        .status-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .status-item {
+            color: #888;
+        }
+
+        .check-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+        }
+
+        .bracket-icon {
+            font-size: 32px;
+            color: #666;
+            font-weight: 300;
+        }
+
+        /* Bottom right section */
+        .bottom-right {
+            position: absolute;
+            bottom: 60px;
+            right: 60px;
+            font-size: 9px;
+            letter-spacing: 1.2px;
+            line-height: 2;
+            max-width: 450px;
+            text-align: right;
+        }
+
+        .log-header {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 9px;
+        }
+
+        .log-content {
+            color: #888;
+            line-height: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Tags -->
+        <div class="header-tag tag-left">EXPERIMENTAL SYSTEMS</div>
+        <div class="header-tag tag-right">AI ASSIST LAYER: ACTIVE</div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            ***********************************************************<br>
+            ***&nbsp;&nbsp;&nbsp;SPARK LAB // AI OPERATIONS TERMINAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;***<br>
+            ***&nbsp;&nbsp;&nbsp;REPORT ID: INNOVATION-482&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;***<br>
+            ***&nbsp;&nbsp;&nbsp;STATUS: ACTIVE MONITORING&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;***<br>
+            ***********************************************************
+        </div>
+
+        <!-- Central Stage -->
+        <div class="central-stage">
+            <!-- Vertical text -->
+            <div class="vertical-left">SHANG</div>
+            <div class="vertical-right">HAI</div>
+
+            <!-- Main Title -->
+            <div class="main-title">
+                <span class="title-spark">SPARK</span><span class="title-lab">LAB</span>
+            </div>
+
+            <!-- Circle Logo -->
+            <div class="circle-logo">®</div>
+        </div>
+
+        <!-- Bottom Left -->
+        <div class="bottom-left">
+            <div class="section-label">INNOVATION-482</div>
+            <div class="section-title">AI REPORTING</div>
+        </div>
+
+        <!-- Bottom Center -->
+        <div class="bottom-center">
+            <div class="project-id">
+                PROJECT ID: SK-7823<br>
+                ////////////////<br>
+                SECTOR ID: HKG-001
+            </div>
+            <div class="status-line">
+                <div class="status-item">SAVING DATA TO SECURE NODE</div>
+                <div class="check-icon">
+                    <span class="bracket-icon">[</span>
+                    <span>✓</span>
+                    <span class="bracket-icon">]</span>
+                </div>
+                <div class="status-item">Escalation: Research AI ready for assist</div>
+            </div>
+        </div>
+
+        <!-- Bottom Right -->
+        <div class="bottom-right">
+            <div class="log-header">[ SYSTEM INSIGHT LOG ]</div>
+            <div class="log-content">
+                Observation: Innovation activity spikes in eastern district<br>
+                Inference: Seasonal research patterns detected<br>
+                Action: Deploy alternate resource AI to assist coordination<br>
+                Human validation required before network deployment
+            </div>
+        </div>
+    </div>
+</body>
+</html>
