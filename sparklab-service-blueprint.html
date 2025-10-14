@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SparkLab 服务蓝图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
+            padding: 40px;
+            text-align: center;
+            border-radius: 24px 24px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "🔥";
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            right: -50px;
+            top: -50px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        h1 {
+            color: #fff;
+            font-size: 36px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .blueprint-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow-x: auto;
+            display: block;
+        }
+        
+        .stage-row {
+            background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .stage-cell {
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #495057;
+            border-right: 2px solid #dee2e6;
+            position: relative;
+            min-width: 200px;
+        }
+        
+        .stage-cell.highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        
+        .row-header {
+            background: #6c757d;
+            color: #fff;
+            padding: 15px 20px;
+            font-weight: 600;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            min-width: 150px;
+            font-size: 13px;
+            text-align: left;
+            border-right: 2px solid #495057;
+        }
+        
+        .cell {
+            padding: 15px;
+            border-right: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+            min-width: 200px;
+            vertical-align: top;
+            background: #fff;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+        
+        .cell:hover {
+            background: #f8f9fa;
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 5;
+            position: relative;
+        }
+        
+        .user-actions {
+            background: #e3f2fd;
+        }
+        
+        .touchpoints {
+            background: #fff3e0;
+        }
+        
+        .frontstage {
+            background: #f3e5f5;
+        }
+        
+        .backstage {
+            background: #e8f5e9;
+        }
+        
+        .support {
+            background: #fce4ec;
+        }
+        
+        .emotion-cell {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+        }
+        
+        .emotion-graph {
+            height: 80px;
+            position: relative;
+            overflow: visible;
+        }
+        
+        .emotion-line {
+            stroke: #FF6B6B;
+            stroke-width: 3;
+            fill: none;
+            filter: drop-shadow(0 2px 4px rgba(255,107,107,0.3));
+        }
+        
+        .emotion-point {
+            fill: #FF6B6B;
+            stroke: #fff;
+            stroke-width: 2;
+        }
+        
+        .opportunity-cell {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #fff;
+            font-weight: 600;
+            padding: 15px;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.1);
+            margin: 2px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .critical-point {
+            background: #ff4757;
+            color: #fff;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .critical-point::before {
+            content: "⚡";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 16px;
+        }
+        
+        .timeline-indicator {
+            background: #ffd93d;
+            color: #333;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .section-divider {
+            border-left: 3px solid #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .blueprint-table {
+                font-size: 10px;
+            }
+            
+            .cell, .stage-cell {
+                min-width: 150px;
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SparkLab 服务蓝图</h1>
+            <div class="subtitle">From Spark to Startup - 创业者完整旅程地图</div>
+        </div>
+        
+        <table class="blueprint-table">
+            <!-- 阶段划分 -->
+            <tr class="stage-row">
+                <td class="row-header">用户阶段</td>
+                <td class="stage-cell">1. 发现认知<br><span class="timeline-indicator">持续</span></td>
+                <td class="stage-cell section-divider">2. 初步接触<br><span class="timeline-indicator">1-2周</span></td>
+                <td class="stage-cell highlight">3. Burning Hacker<br><span class="timeline-indicator">2周</span></td>
+                <td class="stage-cell section-divider">4. 申请准备<br><span class="timeline-indicator">2-4周</span></td>
+                <td class="stage-cell">5. 深度评估<br><span class="timeline-indicator">1-2周</span></td>
+                <td class="stage-cell highlight">6. Residency驻留<br><span class="timeline-indicator">12周</span></td>
+                <td class="stage-cell">7. 毕业过渡<br><span class="timeline-indicator">1周</span></td>
+                <td class="stage-cell section-divider">8. Alumni永续<br><span class="timeline-indicator">终身</span></td>
+            </tr>
+            
+            <!-- 用户行动 -->
+            <tr>
+                <td class="row-header">用户行动</td>
+                <td class="cell user-actions">
+                    • 浏览网站/社交媒体<br>
+                    • 阅读New World文章<br>
+                    • 参加AI Hacker House活动<br>
+                    • 了解20 Fellows项目
+                </td>
+                <td class="cell user-actions">
+                    • 提交报名申请<br>
+                    • 准备作品集<br>
+                    • 撰写动机信<br>
+                    • 录制90秒自我介绍
+                </td>
+                <td class="cell user-actions critical-point">
+                    • 参加2周共居<br>
+                    • 快速构建原型<br>
+                    • 深夜coding session<br>
+                    • 文化价值观融入<br>
+                    <span class="tag">文化筛选关键节点</span>
+                </td>
+                <td class="cell user-actions">
+                    • 完善产品MVP<br>
+                    • 准备核心指标<br>
+                    • 组建团队(≤3人)<br>
+                    • 申请Residency
+                </td>
+                <td class="cell user-actions">
+                    • 参加面试<br>
+                    • Alumni Panel对谈<br>
+                    • 线下dinner交流<br>
+                    • Build Sprint展示<br>
+                    <span class="tag">双向选择</span>
+                </td>
+                <td class="cell user-actions critical-point">
+                    • 全职驻留构建<br>
+                    • Ship-it Monday分享<br>
+                    • OKR迭代<br>
+                    • 社区协作<br>
+                    • 导师1对1<br>
+                    <span class="tag">核心价值交付</span>
+                </td>
+                <td class="cell user-actions">
+                    • Demo Day展示<br>
+                    • 复盘总结<br>
+                    • 下阶段规划<br>
+                    • 社区身份转换
+                </td>
+                <td class="cell user-actions">
+                    • 持续使用空间<br>
+                    • Alumni Retreat<br>
+                    • 年度Reunion<br>
+                    • Sub-Residency发起<br>
+                    • 跟投机会参与
+                </td>
+            </tr>
+            
+            <!-- 前台接触点 -->
+            <tr>
+                <td class="row-header">前台接触点</td>
+                <td class="cell touchpoints">
+                    • 官网sparklab.city<br>
+                    • Discord/微信社群<br>
+                    • 小红书/Twitter<br>
+                    • 线下活动现场
+                </td>
+                <td class="cell touchpoints">
+                    • 申请表单系统<br>
+                    • 邮件通知<br>
+                    • 微信小助手<br>
+                    • Scout推荐
+                </td>
+                <td class="cell touchpoints">
+                    • Hacker House空间<br>
+                    • 共创工作坊<br>
+                    • 黑客马拉松<br>
+                    • 社区晚餐
+                </td>
+                <td class="cell touchpoints">
+                    • 飞书知识库<br>
+                    • Alumni社区<br>
+                    • Office Hour<br>
+                    • 申请指导文档
+                </td>
+                <td class="cell touchpoints">
+                    • Zoom/线下面试<br>
+                    • 核心团队<br>
+                    • Alumni评审团<br>
+                    • 小红书团队
+                </td>
+                <td class="cell touchpoints">
+                    • 别墅空间<br>
+                    • 工作站/实验室<br>
+                    • 导师网络<br>
+                    • EIR访问<br>
+                    • 每日三餐
+                </td>
+                <td class="cell touchpoints">
+                    • Demo舞台<br>
+                    • 投资人网络<br>
+                    • 媒体报道<br>
+                    • Offer Letter
+                </td>
+                <td class="cell touchpoints">
+                    • Discord永久权限<br>
+                    • 全球空间网络<br>
+                    • SPV跟投通道<br>
+                    • Newsletter
+                </td>
+            </tr>
+            
+            <!-- 后台操作 -->
+            <tr>
+                <td class="row-header">后台操作</td>
+                <td class="cell backstage">
+                    <strong>Culture Team</strong><br>
+                    • 品牌内容创作<br>
+                    • Scout网络维护<br>
+                    • 活动策划执行
+                </td>
+                <td class="cell backstage">
+                    <strong>Admissions</strong><br>
+                    • 材料初筛<br>
+                    • 背景调查<br>
+                    • 面试安排
+                </td>
+                <td class="cell backstage">
+                    <strong>Program Team</strong><br>
+                    • 日程协调<br>
+                    • 导师匹配<br>
+                    • 文化传递
+                </td>
+                <td class="cell backstage">
+                    <strong>Investment</strong><br>
+                    • DD准备<br>
+                    • 条款确认<br>
+                    • 投资决策
+                </td>
+                <td class="cell backstage">
+                    <strong>Core Team</strong><br>
+                    • 深度评估<br>
+                    • 小红书沟通<br>
+                    • Fellowship/Membership分类
+                </td>
+                <td class="cell backstage">
+                    <strong>Ops Team</strong><br>
+                    • House Manager<br>
+                    • 餐饮/清洁服务<br>
+                    • 资源调配<br>
+                    • OKR追踪
+                </td>
+                <td class="cell backstage">
+                    <strong>Success Team</strong><br>
+                    • 成果整理<br>
+                    • PR协调<br>
+                    • 下轮融资对接
+                </td>
+                <td class="cell backstage">
+                    <strong>Community</strong><br>
+                    • 社区运营<br>
+                    • 资源库维护<br>
+                    • LP报告<br>
+                    • 跟投SPV管理
+                </td>
+            </tr>
+            
+            <!-- 支持系统 -->
+            <tr>
+                <td class="row-header">支持系统</td>
+                <td class="cell support">
+                    • 网站CMS<br>
+                    • 社交媒体管理<br>
+                    • CRM系统
+                </td>
+                <td class="cell support">
+                    • 申请管理系统<br>
+                    • 邮件自动化<br>
+                    • 数据分析平台
+                </td>
+                <td class="cell support">
+                    • 空间管理系统<br>
+                    • 活动报名平台<br>
+                    • 评分反馈系统
+                </td>
+                <td class="cell support">
+                    • 飞书协作<br>
+                    • GitHub组织<br>
+                    • 知识管理系统
+                </td>
+                <td class="cell support">
+                    • 面试评估工具<br>
+                    • 背调服务<br>
+                    • 法务支持
+                </td>
+                <td class="cell support">
+                    • 云计算Credits<br>
+                    • 计算集群<br>
+                    • 签证服务<br>
+                    • 财务/法务
+                </td>
+                <td class="cell support">
+                    • 视频直播<br>
+                    • PR服务<br>
+                    • 投资人数据库
+                </td>
+                <td class="cell support">
+                    • Alumni平台<br>
+                    • 全球空间系统<br>
+                    • LP管理系统<br>
+                    • 基金运营
+                </td>
+            </tr>
+            
+            <!-- 用户情绪曲线 -->
+            <tr>
+                <td class="row-header">情绪体验</td>
+                <td colspan="8" class="emotion-cell">
+                    <svg class="emotion-graph" viewBox="0 0 800 80" preserveAspectRatio="none">
+                        <path class="emotion-line" d="M 50,60 C 150,50 200,30 250,20 C 300,10 350,25 400,35 C 450,45 500,15 600,10 C 650,8 700,20 750,15" />
+                        <circle class="emotion-point" cx="50" cy="60" r="4" />
+                        <circle class="emotion-point" cx="250" cy="20" r="4" />
+                        <circle class="emotion-point" cx="400" cy="35" r="4" />
+                        <circle class="emotion-point" cx="600" cy="10" r="4" />
+                        <circle class="emotion-point" cx="750" cy="15" r="4" />
+                    </svg>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 11px; color: #666;">
+                        <span>好奇/期待</span>
+                        <span>兴奋/认同</span>
+                        <span>焦虑/压力</span>
+                        <span>成就/归属</span>
+                        <span>持续连接</span>
+                    </div>
+                </td>
+            </tr>
+            
+            <!-- 机会与优化点 -->
+            <tr>
+                <td class="row-header">机会点</td>
+                <td class="cell opportunity-cell">
+                    • 扩大品牌影响力<br>
+                    • Scout网络激活<br>
+                    • 内容营销深化
+                </td>
+                <td class="cell opportunity-cell">
+                    • AI Agent二次机会<br>
+                    • 申请体验优化<br>
+                    • 转化率提升
+                </td>
+                <td class="cell opportunity-cell">
+                    • 文化仪式感强化<br>
+                    • Alumni参与度<br>
+                    • 全球化扩展
+                </td>
+                <td class="cell opportunity-cell">
+                    • 评估标准细化<br>
+                    • 多元化人才<br>
+                    • 快速反馈机制
+                </td>
+                <td class="cell opportunity-cell">
+                    • 决策透明度<br>
+                    • 个性化路径<br>
+                    • LP参与深化
+                </td>
+                <td class="cell opportunity-cell">
+                    • 资源密度提升<br>
+                    • 跨项目协作<br>
+                    • 国际化对接
+                </td>
+                <td class="cell opportunity-cell">
+                    • 成果放大<br>
+                    • 媒体曝光<br>
+                    • 下轮融资率
+                </td>
+                <td class="cell opportunity-cell">
+                    • Sub-Residency<br>
+                    • Mafia网络效应<br>
+                    • 价值回流机制
+                </td>
+            </tr>
+        </table>
+        
+        <div style="padding: 30px; background: #f8f9fa; border-radius: 0 0 24px 24px;">
+            <h3 style="color: #495057; margin-bottom: 15px;">🔑 关键洞察</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div style="padding: 15px; background: #fff; border-radius: 12px; border-left: 4px solid #FF6B6B;">
+                    <strong>文化筛选是核心</strong><br>
+                    <span style="font-size: 12px; color: #666;">Burning Hacker不仅是项目筛选，更是价值观认同和文化融入的关键节点</span>
+                </div>
+                <div style="padding: 15px; background: #fff; border-radius: 12px; border-left: 4px solid #667eea;">
+                    <strong>终身社区价值</strong><br>
+                    <span style="font-size: 12px; color: #666;">Community Forever不是口号，而是通过持续的空间、资源、网络支持实现</span>
+                </div>
+                <div style="padding: 15px; background: #fff; border-radius: 12px; border-left: 4px solid #84fab0;">
+                    <strong>密度创造奇迹</strong><br>
+                    <span style="font-size: 12px; color: #666;">12周高密度共居创造的不只是产品，更是lifelong friends和深度协作网络</span>
+                </div>
+                <div style="padding: 15px; background: #fff; border-radius: 12px; border-left: 4px solid #FFE66D;">
+                    <strong>Investment ≠ Transaction</strong><br>
+                    <span style="font-size: 12px; color: #666;">投资只是开始，真正的价值在于长期陪伴到IPO及之后</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
