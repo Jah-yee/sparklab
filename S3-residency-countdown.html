@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark Lab Residency | Slow Burn</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400&display=swap');
+        
+        @font-face {
+            font-family: 'Impact';
+            src: local('Impact'), local('Impact MT');
+        }
+        
+        :root {
+            --main-color: #ff6737;
+            --glow-intensity: 0.6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            cursor: none;
+            font-variant-numeric: slashed-zero;
+            font-feature-settings: "zero" 1;
+        }
+        
+        /* 自定义光标 - 更柔和 */
+        .cursor {
+            width: 24px;
+            height: 24px;
+            border: 0.5px solid rgba(255, 103, 55, 0.3);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease;
+            mix-blend-mode: screen;
+        }
+        
+        /* 背景层 - 代码雨效果 */
+        #matrix-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.02;
+            pointer-events: none;
+        }
+        
+        /* 轨道系统 */
+        .orbital-system {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        
+        .orbit {
+            position: absolute;
+            border: 1px solid rgba(255, 103, 55, 0.08);
+            border-radius: 50%;
+            animation: rotate 120s linear infinite;
+        }
+        
+        .orbit:nth-child(1) {
+            width: 30vw;
+            height: 30vw;
+            animation-duration: 90s;
+        }
+        
+        .orbit:nth-child(2) {
+            width: 50vw;
+            height: 50vw;
+            animation-duration: 120s;
+            animation-direction: reverse;
+        }
+        
+        .orbit:nth-child(3) {
+            width: 70vw;
+            height: 70vw;
+            animation-duration: 180s;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 音频可视化波形环 - 更凝实的设计 */
+        .audio-visualizer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vw;
+            max-width: 80vh;
+            max-height: 80vh;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .wave-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(255, 103, 55, 0.1);
+            border-radius: 50%;
+            opacity: 0;
+            animation: wave-pulse 6s ease-out infinite;
+        }
+        
+        .wave-circle:nth-child(2) {
+            animation-delay: 1.5s;
+            border-width: 2px;
+        }
+        
+        .wave-circle:nth-child(3) {
+            animation-delay: 3s;
+            border-width: 1px;
+        }
+        
+        @keyframes wave-pulse {
+            0% {
+                transform: scale(0.85);
+                opacity: 0;
+                border-color: rgba(255, 103, 55, 0.4);
+            }
+            20% {
+                opacity: 0.8;
+                border-color: rgba(255, 103, 55, 0.3);
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+                border-color: rgba(255, 103, 55, 0);
+            }
+        }
+        
+        /* SVG波形路径 - 更厚实 */
+        #waveform-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 6;
+        }
+        
+        .waveform-path {
+            fill: none;
+            stroke: rgba(255, 103, 55, 0.4);
+            stroke-width: 3;
+            stroke-linecap: round;
+            filter: none;
+        }
+        
+        /* 主倒计时容器 */
+        .countdown-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            text-align: center;
+        }
+        
+        /* 倒计时数字组 */
+        .countdown-display {
+            display: flex;
+            gap: 0.4vw;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2vh;
+        }
+        
+        /* 时间单元 */
+        .time-unit {
+            position: relative;
+        }
+        
+        /* 数字样式 - 核心设计 */
+        .digit-group {
+            display: flex;
+            gap: 0.1vw;
+            position: relative;
+        }
+        
+        .digit {
+            width: 7.5vw;
+            height: 14vh;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 103, 55, 0.02), transparent);
+            border: 0.5px solid rgba(255, 103, 55, 0.1);
+            box-shadow: inset 0 0 20px rgba(255, 103, 55, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .digit-value {
+            font-size: 10vh;
+            font-weight: normal;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            color: var(--main-color);
+            text-shadow: 
+                0 0 30px rgba(255, 103, 55, var(--glow-intensity)),
+                0 0 60px rgba(255, 103, 55, 0.3);
+            position: relative;
+            z-index: 2;
+            font-variant-numeric: slashed-zero;
+            font-feature-settings: "zero" 1;
+            transition: opacity 0.6s ease, color 0.5s ease;
+        }
+        
+        /* 数字变化时的平滑过渡 */
+        .digit.changing .digit-value {
+            opacity: 0.7;
+        }
+        
+        /* 移除脉动，保持稳定 */
+        
+        /* 分隔符 - 缓慢的呼吸感 */
+        .separator {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 6vh;
+            color: rgba(255, 103, 55, 0.5);
+            margin: 0 0.4vw;
+            animation: blink 3s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* 时间标签 - 更清晰 */
+        .time-label {
+            font-size: 1.3vh;
+            color: rgba(255, 255, 255, 0.25);
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            margin-top: 1.5vh;
+            font-weight: 100;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* 进度条 - 更低调 */
+        .progress-bar {
+            position: absolute;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60vw;
+            height: 0.5px;
+            background: rgba(255, 103, 55, 0.05);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: rgba(255, 103, 55, 0.3);
+            transition: width 1s linear;
+        }
+        
+        /* 底部标语 */
+        .bottom-tagline {
+            position: absolute;
+            bottom: 2vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: Georgia, serif;
+            font-style: italic;
+            font-size: 1.2vh;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+            text-shadow: 0 0 10px rgba(255, 103, 55, 0.2);
+            border-top: 0.5px solid rgba(255, 103, 55, 0.1);
+            border-bottom: 0.5px solid rgba(255, 103, 55, 0.1);
+            padding: 0.5vh 2vw;
+        }
+        
+        /* 火花粒子容器 */
+        #particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 103, 55, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 15s ease-out forwards;
+            filter: blur(0.5px);
+        }
+        
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0.5);
+            }
+        }
+        
+        /* 呼吸光晕 - 更缓慢的节奏 */
+        .glow-orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 45vw;
+            height: 45vw;
+            background: radial-gradient(circle, rgba(255, 103, 55, 0.08), transparent 70%);
+            animation: breathe 6s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes breathe {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(0.95);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.05);
+                opacity: 0.7;
+            }
+        }
+        
+        /* Grid 网格背景 - 缓慢移动 */
+        .grid-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 103, 55, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 103, 55, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 30s linear infinite;
+        }
+        
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* 毫秒显示 - 稍微亮一点 */
+        .milliseconds {
+            position: absolute;
+            bottom: -3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2vh;
+            color: rgba(255, 103, 55, 0.2);
+            font-weight: 100;
+            letter-spacing: 0.1em;
+        }
+        
+        /* 生命体征指示器 - 稍微亮一点 */
+        .vitals-indicator {
+            position: absolute;
+            top: 5vh;
+            right: 5vw;
+            font-size: 0.9vh;
+            color: rgba(255, 103, 55, 0.35);
+            text-align: right;
+            font-weight: 100;
+            letter-spacing: 0.1em;
+        }
+        
+        .vitals-indicator span {
+            display: block;
+            margin: 0.5vh 0;
+        }
+        
+        .pulse-dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 103, 55, 0.6);
+            border-radius: 50%;
+            margin-left: 5px;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Glitch效果 for commits */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+            color: rgba(255, 103, 55, 0.4);
+        }
+        
+        .glitch-text.glitching {
+            animation: glitch-flicker 0.3s ease;
+        }
+        
+        @keyframes glitch-flicker {
+            0%, 100% { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+            20% { 
+                opacity: 0.8;
+                transform: translateX(-1px);
+            }
+            40% { 
+                opacity: 0.6;
+                transform: translateX(1px);
+            }
+            60% { 
+                opacity: 0.9;
+                transform: translateX(-0.5px);
+            }
+        }
+        
+        /* 21:00 仪式效果 - 更内敛 */
+        .ritual-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent, rgba(255, 103, 55, 0.1));
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+        }
+        
+        .ritual-overlay.active {
+            animation: ritual-pulse 12s ease-out;
+        }
+        
+        @keyframes ritual-pulse {
+            0% { opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+        
+        .ritual-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8vh;
+            color: rgba(255, 103, 55, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.8em;
+            opacity: 0;
+            z-index: 21;
+            font-weight: 100;
+        }
+        
+        .ritual-message.active {
+            animation: ritual-text 12s ease-out;
+        }
+        
+        @keyframes ritual-text {
+            0%, 100% { 
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            50% { 
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        /* 声音控制按钮 - 更简洁 */
+        .sound-toggle {
+            position: fixed;
+            bottom: 5vh;
+            right: 5vw;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 103, 55, 0.05);
+            border: 0.5px solid rgba(255, 103, 55, 0.2);
+            border-radius: 50%;
+            cursor: pointer !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+        }
+        
+        .sound-toggle:hover {
+            background: rgba(255, 103, 55, 0.1);
+            transform: scale(1.05);
+            opacity: 1;
+        }
+        
+        .sound-toggle.muted::after {
+            content: '🔇';
+            font-size: 16px;
+        }
+        
+        .sound-toggle.unmuted::after {
+            content: '🔊';
+            font-size: 16px;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .digit {
+                width: 12vw;
+                height: 10vh;
+            }
+            .digit-value {
+                font-size: 6vh;
+            }
+            .separator {
+                font-size: 4vh;
+                margin: 0 0.3vw;
+            }
+            .countdown-display {
+                gap: 0.3vw;
+            }
+            .audio-visualizer {
+                width: 95vw;
+                height: 95vw;
+            }
+            .bottom-tagline {
+                font-size: 1vh;
+                padding: 0.3vh 1vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 自定义光标 -->
+    <div class="cursor"></div>
+    
+    <!-- 网格背景 -->
+    <div class="grid-bg"></div>
+    
+    <!-- 代码雨背景 -->
+    <canvas id="matrix-bg"></canvas>
+    
+    <!-- 轨道系统 -->
+    <div class="orbital-system">
+        <div class="orbit"></div>
+        <div class="orbit"></div>
+        <div class="orbit"></div>
+    </div>
+    
+    <!-- 呼吸光晕 -->
+    <div class="glow-orb"></div>
+    
+    <!-- 音频可视化 -->
+    <div class="audio-visualizer">
+        <div class="wave-circle"></div>
+        <div class="wave-circle"></div>
+        <div class="wave-circle"></div>
+        <svg id="waveform-svg">
+            <path class="waveform-path" id="waveform"></path>
+            <path class="waveform-path" id="waveform-inner" style="stroke: rgba(255, 103, 55, 0.2); stroke-width: 1.5;"></path>
+        </svg>
+    </div>
+    
+    <!-- 火花粒子 -->
+    <div id="particles"></div>
+    
+    <!-- 主倒计时 -->
+    <div class="countdown-container">
+        <div class="countdown-display">
+            <!-- 天数 -->
+            <div class="time-unit">
+                <div class="digit-group">
+                    <div class="digit">
+                        <span class="digit-value" id="days-tens">0</span>
+                    </div>
+                    <div class="digit">
+                        <span class="digit-value" id="days-ones">0</span>
+                    </div>
+                </div>
+                <div class="time-label">DAYS</div>
+            </div>
+            
+            <span class="separator">:</span>
+            
+            <!-- 小时 -->
+            <div class="time-unit">
+                <div class="digit-group">
+                    <div class="digit">
+                        <span class="digit-value" id="hours-tens">0</span>
+                    </div>
+                    <div class="digit">
+                        <span class="digit-value" id="hours-ones">0</span>
+                    </div>
+                </div>
+                <div class="time-label">HOURS</div>
+            </div>
+            
+            <span class="separator">:</span>
+            
+            <!-- 分钟 -->
+            <div class="time-unit">
+                <div class="digit-group">
+                    <div class="digit">
+                        <span class="digit-value" id="minutes-tens">0</span>
+                    </div>
+                    <div class="digit">
+                        <span class="digit-value" id="minutes-ones">0</span>
+                    </div>
+                </div>
+                <div class="time-label">MINUTES</div>
+            </div>
+            
+            <span class="separator">:</span>
+            
+            <!-- 秒数 -->
+            <div class="time-unit">
+                <div class="digit-group">
+                    <div class="digit">
+                        <span class="digit-value" id="seconds-tens">0</span>
+                    </div>
+                    <div class="digit">
+                        <span class="digit-value" id="seconds-ones">0</span>
+                    </div>
+                </div>
+                <div class="time-label">SECONDS</div>
+            </div>
+        </div>
+        
+        <!-- 毫秒显示 -->
+        <div class="milliseconds" id="milliseconds">.000</div>
+    </div>
+    
+    <!-- 进度条 -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+    
+    <!-- 底部标语 -->
+    <div class="bottom-tagline">
+        The residency where young founders build the world from within.
+    </div>
+    
+    <!-- 生命体征 -->
+    <div class="vitals-indicator">
+        <span>SPARK PULSE <span id="heartRate">72</span> BPM<span class="pulse-dot"></span></span>
+        <span>ACTIVITY <span id="activity">NORMAL</span></span>
+        <span>COMMITS TODAY <span id="commits" class="glitch-text">0</span></span>
+    </div>
+    
+    <!-- 21:00 仪式覆盖层 -->
+    <div class="ritual-overlay" id="ritualOverlay"></div>
+    <div class="ritual-message" id="ritualMessage">KEEP BUILDING</div>
+    
+    <!-- 声音控制 - 隐藏 -->
+    <div class="sound-toggle unmuted" id="soundToggle" style="display: none;"></div>
+    
+    <script>
+        // 配置
+        const CONFIG = {
+            // 正式日期：8月11日到8月27日（GMT+8）
+            // 测试时使用当前时间：
+            startDate: new Date(), 
+            endDate: new Date(Date.now() + 17 * 24 * 60 * 60 * 1000),
+            // 正式部署时改为：
+            // startDate: new Date('2025-08-11T00:00:00+08:00'), 
+            // endDate: new Date('2025-08-27T23:59:59+08:00'),
+            sparkWords: ['BUILD', 'CREATE', 'SPARK', 'LEGACY', 'ITERATE', 'SHIP', 'SCALE', 'DREAM'],
+            particleInterval: 8000, // 粒子生成间隔
+            matrixSpeed: 50, // 代码雨速度
+            soundEnabled: true, // 声音默认开启
+            ritualHour: 21, // 21:00仪式时刻
+            ritualMessages: [
+                'KEEP BUILDING',
+                'STAY CURIOUS',
+                'TRUST THE PROCESS',
+                'EMBRACE CHAOS',
+                'FIND YOUR SPARK',
+                'BUILD TO THINK',
+                'SHIP FAST',
+                'STAY HUNGRY'
+            ]
+        };
+        
+        // Web Audio API 声音引擎
+        class SoundEngine {
+            constructor() {
+                this.context = null;
+                this.oscillator = null;
+                this.gainNode = null;
+                this.analyser = null;
+                this.dataArray = null;
+                this.initialized = false;
+            }
+            
+            init() {
+                if (this.initialized) return;
+                
+                this.context = new (window.AudioContext || window.webkitAudioContext)();
+                this.gainNode = this.context.createGain();
+                this.gainNode.gain.value = 0.005; // 更低的音量
+                this.gainNode.connect(this.context.destination);
+                
+                // 分析器用于可视化
+                this.analyser = this.context.createAnalyser();
+                this.analyser.fftSize = 256;
+                this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+                
+                this.initialized = true;
+            }
+            
+            // Tick声音 - 更轻柔
+            playTick() {
+                if (!this.initialized || !CONFIG.soundEnabled) return;
+                
+                const osc = this.context.createOscillator();
+                const gain = this.context.createGain();
+                
+                osc.frequency.value = 600 + Math.random() * 50; // 更低的频率
+                osc.type = 'sine';
+                
+                gain.gain.setValueAtTime(0, this.context.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.context.currentTime + 0.001);
+                gain.gain.exponentialRampToValueAtTime(0.0001, this.context.currentTime + 0.03);
+                
+                osc.connect(gain);
+                gain.connect(this.gainNode);
+                gain.connect(this.analyser);
+                
+                osc.start(this.context.currentTime);
+                osc.stop(this.context.currentTime + 0.03);
+            }
+            
+            // 整点钟声 - 更轻柔
+            playHourChime() {
+                if (!this.initialized || !CONFIG.soundEnabled) return;
+                
+                const frequencies = [523.25, 659.25, 783.99]; // C, E, G
+                
+                frequencies.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = this.context.createOscillator();
+                        const gain = this.context.createGain();
+                        
+                        osc.frequency.value = freq;
+                        osc.type = 'triangle';
+                        
+                        gain.gain.setValueAtTime(0, this.context.currentTime);
+                        gain.gain.linearRampToValueAtTime(0.03, this.context.currentTime + 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, this.context.currentTime + 0.8);
+                        
+                        osc.connect(gain);
+                        gain.connect(this.gainNode);
+                        
+                        osc.start(this.context.currentTime);
+                        osc.stop(this.context.currentTime + 0.8);
+                    }, i * 200);
+                });
+            }
+            
+            // 21:00仪式声音 - 深沉但不刺耳
+            playRitualSound() {
+                if (!this.initialized || !CONFIG.soundEnabled) return;
+                
+                // 深沉的共振音
+                const baseFreq = 110; // A2
+                
+                for (let i = 0; i < 3; i++) {
+                    const osc = this.context.createOscillator();
+                    const gain = this.context.createGain();
+                    
+                    osc.frequency.value = baseFreq * (i + 1);
+                    osc.type = 'sine';
+                    
+                    gain.gain.setValueAtTime(0, this.context.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.02, this.context.currentTime + 2);
+                    gain.gain.linearRampToValueAtTime(0, this.context.currentTime + 5);
+                    
+                    osc.connect(gain);
+                    gain.connect(this.gainNode);
+                    
+                    osc.start(this.context.currentTime);
+                    osc.stop(this.context.currentTime + 5);
+                }
+            }
+            
+            // 获取音频数据用于可视化
+            getFrequencyData() {
+                if (!this.analyser) return null;
+                this.analyser.getByteFrequencyData(this.dataArray);
+                return this.dataArray;
+            }
+            
+            // 生成环境音
+            startAmbient() {
+                if (!this.initialized || !CONFIG.soundEnabled) return;
+                
+                // 低频环境噪音
+                const bufferSize = this.context.sampleRate * 2;
+                const buffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate);
+                const data = buffer.getChannelData(0);
+                
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() - 0.5) * 0.0005;
+                }
+                
+                const source = this.context.createBufferSource();
+                const filter = this.context.createBiquadFilter();
+                
+                source.buffer = buffer;
+                source.loop = true;
+                
+                filter.type = 'lowpass';
+                filter.frequency.value = 100;
+                
+                source.connect(filter);
+                filter.connect(this.gainNode);
+                filter.connect(this.analyser);
+                
+                source.start();
+            }
+        }
+        
+        const soundEngine = new SoundEngine();
+        
+        // 自定义光标
+        document.addEventListener('mousemove', (e) => {
+            const cursor = document.querySelector('.cursor');
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+        
+        // Matrix 代码雨效果
+        function initMatrix() {
+            const canvas = document.getElementById('matrix-bg');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const matrix = CONFIG.sparkWords.join('').split('');
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = 'rgba(255, 103, 55, 0.8)';
+                ctx.font = fontSize + 'px Fira Code';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = matrix[Math.floor(Math.random() * matrix.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.985) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, CONFIG.matrixSpeed);
+        }
+        
+        // 音频可视化波形 - 更平滑的心跳效果
+        function updateWaveform() {
+            const svg = document.getElementById('waveform-svg');
+            const path = document.getElementById('waveform');
+            const innerPath = document.getElementById('waveform-inner');
+            const width = svg.clientWidth;
+            const height = svg.clientHeight;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) * 0.35;
+            
+            const points = 64; // 减少点数，更平滑
+            let pathData = '';
+            let innerPathData = '';
+            
+            // 模拟心跳波形
+            const time = Date.now() * 0.0003; // 更慢的速度
+            
+            for (let i = 0; i <= points; i++) {
+                const angle = (i / points) * Math.PI * 2;
+                
+                // 外层波形 - 主心跳
+                let waveHeight = 8;
+                waveHeight += Math.sin(time + i * 0.05) * 4;
+                waveHeight += Math.sin(time * 2 + i * 0.1) * 2;
+                
+                // 偶尔的强心跳
+                if (Math.sin(time * 0.5) > 0.8) {
+                    waveHeight += Math.sin(time * 4 + i * 0.2) * 6;
+                }
+                
+                const r = radius + waveHeight;
+                const x = centerX + Math.cos(angle) * r;
+                const y = centerY + Math.sin(angle) * r;
+                
+                // 内层波形 - 更柔和
+                const innerWaveHeight = waveHeight * 0.5;
+                const innerR = radius - 5 + innerWaveHeight;
+                const innerX = centerX + Math.cos(angle) * innerR;
+                const innerY = centerY + Math.sin(angle) * innerR;
+                
+                if (i === 0) {
+                    pathData += `M ${x} ${y}`;
+                    innerPathData += `M ${innerX} ${innerY}`;
+                } else {
+                    pathData += ` L ${x} ${y}`;
+                    innerPathData += ` L ${innerX} ${innerY}`;
+                }
+            }
+            
+            pathData += ' Z';
+            innerPathData += ' Z';
+            path.setAttribute('d', pathData);
+            innerPath.setAttribute('d', innerPathData);
+            
+            requestAnimationFrame(updateWaveform);
+        }
+        
+        // 火花粒子生成 - 更缓慢的运动
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const offsetX = (Math.random() - 0.5) * 300;
+            const offsetY = (Math.random() - 0.5) * 300;
+            
+            particle.style.left = (centerX + offsetX) + 'px';
+            particle.style.top = (centerY + offsetY) + 'px';
+            
+            // 更小的运动范围，更缓慢的飘动
+            const tx = (Math.random() - 0.5) * 200;
+            const ty = -Math.random() * 150 - 50; // 主要向上飘
+            particle.style.setProperty('--tx', tx + 'px');
+            particle.style.setProperty('--ty', ty + 'px');
+            
+            document.getElementById('particles').appendChild(particle);
+            
+            // 动画时间延长
+            setTimeout(() => particle.remove(), 15000);
+        }
+        
+        // 数字变化动画 - 平滑过渡，无闪烁
+        function updateDigit(elementId, newValue, oldValue) {
+            if (newValue !== oldValue) {
+                const element = document.getElementById(elementId);
+                const parent = element.parentElement;
+                
+                // 平滑过渡
+                parent.classList.add('changing');
+                setTimeout(() => {
+                    element.textContent = newValue;
+                    parent.classList.remove('changing');
+                }, 300);
+                
+                // 播放轻柔的tick声音
+                if (CONFIG.soundEnabled) {
+                    soundEngine.playTick();
+                }
+                
+                // 偶尔生成粒子（频率降低）
+                if (Math.random() > 0.95) {
+                    createParticle();
+                }
+            }
+        }
+        
+        // 生命体征模拟
+        function updateVitals() {
+            // 模拟心率
+            const heartRate = 60 + Math.floor(Math.random() * 30);
+            document.getElementById('heartRate').textContent = heartRate;
+            
+            // 模拟活动状态
+            const activities = ['IDLE', 'NORMAL', 'ACTIVE', 'BUILDING', 'FOCUSED'];
+            const activity = activities[Math.floor(Math.random() * activities.length)];
+            document.getElementById('activity').textContent = activity;
+            
+            // 模拟提交数 - 添加glitch效果
+            const commitsElement = document.getElementById('commits');
+            const currentCommits = parseInt(commitsElement.textContent);
+            
+            // 偶尔增加commits
+            if (Math.random() > 0.95) {
+                commitsElement.textContent = currentCommits + 1;
+            }
+            
+            // 随机glitch效果
+            if (Math.random() > 0.8) {
+                commitsElement.classList.add('glitching');
+                setTimeout(() => {
+                    commitsElement.classList.remove('glitching');
+                }, 300);
+            }
+        }
+        
+        // 21:00 仪式触发
+        function checkRitual() {
+            const now = new Date();
+            if (now.getHours() === CONFIG.ritualHour && now.getMinutes() === 0 && now.getSeconds() < 2) {
+                triggerRitual();
+            }
+        }
+        
+        function triggerRitual() {
+            const overlay = document.getElementById('ritualOverlay');
+            const message = document.getElementById('ritualMessage');
+            
+            // 随机选择消息
+            const randomMessage = CONFIG.ritualMessages[Math.floor(Math.random() * CONFIG.ritualMessages.length)];
+            message.textContent = randomMessage;
+            
+            overlay.classList.add('active');
+            message.classList.add('active');
+            
+            // 播放仪式声音
+            soundEngine.playRitualSound();
+            
+            // 生成适量粒子 - 更内敛
+            for (let i = 0; i < 20; i++) {
+                setTimeout(createParticle, i * 100);
+            }
+            
+            // 12秒后移除效果
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                message.classList.remove('active');
+            }, 12000);
+        }
+        
+        // 倒计时主逻辑
+        function updateCountdown() {
+            const now = new Date();
+            const remaining = CONFIG.endDate - now;
+            const elapsed = now - CONFIG.startDate;
+            const total = CONFIG.endDate - CONFIG.startDate;
+            
+            if (remaining <= 0) {
+                document.querySelector('.countdown-display').innerHTML = '<div style="font-size: 10vh; color: #ff6737; text-shadow: 0 0 40px rgba(255, 103, 55, 0.8);">IGNITED! 🔥</div>';
+                return;
+            }
+            
+            // 时间感知的视觉增强
+            const hoursRemaining = remaining / (1000 * 60 * 60);
+            if (hoursRemaining <= 24) {
+                // 最后24小时增强效果
+                document.documentElement.style.setProperty('--glow-intensity', '0.8');
+                if (hoursRemaining <= 1) {
+                    // 最后1小时颜色变深
+                    document.documentElement.style.setProperty('--main-color', '#ff4520');
+                }
+            }
+            
+            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            const milliseconds = remaining % 1000;
+            
+            // 保存旧值
+            const oldValues = {
+                daysTens: document.getElementById('days-tens').textContent,
+                daysOnes: document.getElementById('days-ones').textContent,
+                hoursTens: document.getElementById('hours-tens').textContent,
+                hoursOnes: document.getElementById('hours-ones').textContent,
+                minutesTens: document.getElementById('minutes-tens').textContent,
+                minutesOnes: document.getElementById('minutes-ones').textContent,
+                secondsTens: document.getElementById('seconds-tens').textContent,
+                secondsOnes: document.getElementById('seconds-ones').textContent
+            };
+            
+            // 更新显示
+            const daysTens = Math.floor(days / 10);
+            const daysOnes = days % 10;
+            const hoursTens = Math.floor(hours / 10);
+            const hoursOnes = hours % 10;
+            const minutesTens = Math.floor(minutes / 10);
+            const minutesOnes = minutes % 10;
+            const secondsTens = Math.floor(seconds / 10);
+            const secondsOnes = seconds % 10;
+            
+            updateDigit('days-tens', daysTens, oldValues.daysTens);
+            updateDigit('days-ones', daysOnes, oldValues.daysOnes);
+            updateDigit('hours-tens', hoursTens, oldValues.hoursTens);
+            updateDigit('hours-ones', hoursOnes, oldValues.hoursOnes);
+            updateDigit('minutes-tens', minutesTens, oldValues.minutesTens);
+            updateDigit('minutes-ones', minutesOnes, oldValues.minutesOnes);
+            updateDigit('seconds-tens', secondsTens, oldValues.secondsTens);
+            updateDigit('seconds-ones', secondsOnes, oldValues.secondsOnes);
+            
+            // 更新毫秒（简化显示）
+            const displayMs = Math.floor(milliseconds / 10) * 10; // 显示10的倍数
+            document.getElementById('milliseconds').textContent = '.' + displayMs.toString().padStart(3, '0');
+            
+            // 更新进度条
+            const progress = (elapsed / total) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            
+            // 整点特效 - 更克制
+            if (minutes === 0 && seconds === 0 && milliseconds < 100) {
+                soundEngine.playHourChime();
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(createParticle, i * 200);
+                }
+            }
+            
+            // 检查21:00仪式
+            checkRitual();
+        }
+        
+        // 声音开关 - 用户手动控制时才开启
+        document.getElementById('soundToggle').addEventListener('click', function() {
+            CONFIG.soundEnabled = !CONFIG.soundEnabled;
+            this.classList.toggle('muted');
+            this.classList.toggle('unmuted');
+            
+            if (CONFIG.soundEnabled) {
+                soundEngine.init();
+                soundEngine.startAmbient();
+            }
+        });
+        
+        // 点击页面任意位置开启声音（用于绕过浏览器自动播放限制）
+        document.addEventListener('click', function initSound() {
+            if (!soundEngine.initialized && CONFIG.soundEnabled) {
+                soundEngine.init();
+                soundEngine.startAmbient();
+                document.removeEventListener('click', initSound);
+            }
+        });
+        
+        // 窗口调整
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('matrix-bg');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // 初始化
+        initMatrix();
+        updateWaveform();
+        setInterval(createParticle, CONFIG.particleInterval);
+        setInterval(updateCountdown, 10);
+        setInterval(updateVitals, 3000);
+        
+        // 立即执行一次
+        updateCountdown();
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // 按空格键触发仪式（测试用）
+            if (e.code === 'Space') {
+                e.preventDefault();
+                triggerRitual();
+            }
+        });
+    </script>
+</body>
+</html>

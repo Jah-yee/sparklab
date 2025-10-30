@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compose Mail - Vintage Email Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Monaco', monospace;
+            background: #e8e8e8;
+            padding: 20px;
+        }
+
+        .email-client {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 2px solid #000000;
+            box-shadow: 8px 8px 0px #000000;
+        }
+
+        .titlebar {
+            background: #000000;
+            color: #ffffff;
+            padding: 8px 12px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000000;
+        }
+
+        .titlebar-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .titlebar-button {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            background: #000000;
+            cursor: pointer;
+        }
+
+        .menubar {
+            background: #f0f0f0;
+            border-bottom: 2px solid #000000;
+            padding: 6px 12px;
+            font-size: 13px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .menubar span {
+            cursor: pointer;
+            padding: 2px 8px;
+            border: 1px solid transparent;
+        }
+
+        .menubar span:hover {
+            border: 1px solid #000000;
+            background: #ffffff;
+        }
+
+        .toolbar {
+            background: #e0e0e0;
+            border-bottom: 2px solid #000000;
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .toolbar-button {
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .toolbar-button:active {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .email-header {
+            padding: 15px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #000000;
+        }
+
+        .header-row {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .header-label {
+            width: 80px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .header-input {
+            flex: 1;
+            padding: 4px 8px;
+            border: 2px solid #000000;
+            background: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .email-body {
+            padding: 20px;
+            background: #ffffff;
+            min-height: 400px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #000000;
+            white-space: pre-wrap;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #000000;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .statusbar {
+            background: #000000;
+            color: #ffffff;
+            padding: 6px 12px;
+            font-size: 11px;
+            border-top: 2px solid #000000;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .ascii-logo {
+            font-size: 10px;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-client">
+        <div class="titlebar">
+            <span>█ Compose Mail - Mail Client v2.1</span>
+            <div class="titlebar-buttons">
+                <div class="titlebar-button"></div>
+                <div class="titlebar-button"></div>
+                <div class="titlebar-button"></div>
+            </div>
+        </div>
+
+        <div class="menubar">
+            <span><u>F</u>ile</span>
+            <span><u>E</u>dit</span>
+            <span><u>V</u>iew</span>
+            <span><u>I</u>nsert</span>
+            <span><u>F</u>ormat</span>
+            <span><u>T</u>ools</span>
+            <span><u>H</u>elp</span>
+        </div>
+
+        <div class="toolbar">
+            <button class="toolbar-button">SEND</button>
+            <button class="toolbar-button">ATTACH</button>
+            <button class="toolbar-button">SAVE</button>
+            <button class="toolbar-button">SPELL</button>
+            <button class="toolbar-button">CANCEL</button>
+        </div>
+
+        <div class="email-header">
+            <div class="header-row">
+                <span class="header-label">From:</span>
+                <input type="text" class="header-input" value="friends@sparklab.com" readonly>
+            </div>
+            <div class="header-row">
+                <span class="header-label">To:</span>
+                <input type="text" class="header-input" value="new.builder@sparklab.com" readonly>
+            </div>
+            <div class="header-row">
+                <span class="header-label">Subject:</span>
+                <input type="text" class="header-input" value="Welcome to Spark Lab - Your Journey Begins" readonly>
+            </div>
+            <div class="header-row">
+                <span class="header-label">Date:</span>
+                <input type="text" class="header-input" value="Sat, 25 Oct 2025 14:23:17 GMT" readonly>
+            </div>
+        </div>
+
+        <div class="email-body"><pre class="ascii-logo">
+   _____ ____  ___    ____  __ __    __    ___  ____  
+  / ___/|    \|   \  |    \|  |  |  /  ]  /  _]|    \ 
+ (   \_  |  o  )    \ |  D  )  |  | /  /  /  [_ |  o  )
+  \__  | |   _/|  D  ||    /|  ~  |/  /  |    _]|     |
+  /  \ | |  |  |     ||    \|___, |   \_ |   [_ |  O  |
+  \    | |  |  |     ||  .  \|     |\    ||     ||     |
+   \___||__|  |_____||__|\_||____/  \___||_____||_____|
+                                                        
+</pre>Hi there! 
+
+Welcome to *Spark Lab. You're here to build the world we are called to create.
+
+We hold a few words before you enter this promised land:
+  • Everything begins with a spark.
+  • Creation is how you become who you truly are.
+  • Talk to users. Ship weekly. Be bold. Be kind.
+  • Repeat.
+
+The cohort is your force multiplier. Our lab is your oxygen and soil.
+Use them.
+
+You are here to add what only you can add to the world.
+We're excited for what you're about to build.
+
+Warmly,
+Your friends at Spark Lab
+
+
+═══════════════════════════════════════════════════════════════════
+ Message composed in plain text | ASCII Mode: ON | Encoding: UTF-8
+═══════════════════════════════════════════════════════════════════<span class="cursor"></span></div>
+
+        <div class="statusbar">
+            <span>Ready | Lines: 23 | Chars: 487 | Size: 0.5KB</span>
+            <span>OUTBOX | Connected | 10:23 AM</span>
+        </div>
+    </div>
+</body>
+</html>
