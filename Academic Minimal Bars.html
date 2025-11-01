@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>极简条形图 · 白底</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #FFFFFF;
+        --text: #1A1A1A;
+        --muted: rgba(0,0,0,0.55);
+        --muted-more: rgba(0,0,0,0.35);
+        --line: rgba(0,0,0,0.08);
+        --axis: rgba(0,0,0,0.12);
+        --bar: #FF7A28;
+        --bar-soft: #FFC7A3;
+        --secondary-shift: -11px; /* 次级刻度上移到 -11px */
+      }
+      html, body {
+        margin: 0; padding: 0; background: var(--bg); color: var(--text);
+        font-family: Georgia, "Times New Roman", serif;
+      }
+      .wrap {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6vh 6vw;
+      }
+      .layout {
+        width: 1080px;
+        max-width: 96vw;
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 36px;
+        align-items: start;
+      }
+      /* 左侧：极简条形图（无边框、无姓名） */
+      .chart { padding: 8px 0 0; background: #FFF; }
+      .plot { display: grid; grid-template-columns: 1fr; }
+      .canvas { position: relative; padding-top: 6px; }
+      .xgrid { position: relative; height: 0; }
+      .xgrid::before, .xgrid::after {
+        content: ""; position: absolute; left: 0; right: 0;
+        border-top: 1px dashed var(--axis); opacity: 0.5;
+      }
+      .xgrid::before { top: -2px; }
+
+      .bar-row {
+        height: 22px; margin: 8px 0; display: flex; align-items: center;
+      }
+      .bar { height: 100%; background: var(--bar); border-radius: 4px; }
+      .bar.soft { background: var(--bar-soft); }
+
+      /* 主刻度轴：0 / 14 / 28 / 42 */
+      .xaxis {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: "Cinzel", serif;
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 10px;
+        position: relative;
+        line-height: 1;
+      }
+
+      /* 次级刻度层：上移 -11px */
+      .xaxis.secondary {
+        position: relative;
+        height: 0;
+        font-family: "Cinzel", serif;
+      }
+      .xaxis.secondary .tick {
+        position: absolute;
+        bottom: 0;
+        transform: translateX(-50%) translateY(var(--secondary-shift));
+        font-size: 10px;
+        line-height: 1;
+        color: var(--muted-more);
+        letter-spacing: 0.08em;
+      }
+      /* 位置映射：0~42 => left = 值/42 * 100% */
+      .tick.v21 { left: calc(21 / 42 * 100%); } /* 原22改为21 */
+      .tick.v31 { left: calc(31 / 42 * 100%); }
+
+      /* 右侧：关键数字 */
+      .panel {
+        background: #FFF;
+        padding: 4px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .kv {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: baseline;
+        gap: 6px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+      .kv.avg {
+        border-top: none;
+        padding-top: 0;
+      }
+      .k {
+        font-family: "Cinzel", serif;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: left;
+        padding-right: 0;
+      }
+      .v { font-size: 22px; color: var(--text); text-align: left; }
+      .avg .v { color: var(--bar); font-weight: 700; }
+
+      /* Max/Min 同行，缩小标签与数字间距，使 31 更靠近 Max */
+      .kv.duo {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto;
+        align-items: baseline;
+        gap: 4px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+      .kv.duo .k { text-align: left; }
+      .kv.duo .v { text-align: left; }
+
+      @media (max-width: 760px) {
+        .layout { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap" aria-label="极简白底布局">
+      <section class="layout">
+        <!-- 左侧：条形图（无姓名、无边框） -->
+        <div class="chart" aria-label="条形直方图">
+          <div class="plot">
+            <div class="canvas">
+              <div class="bar-row"><div class="bar soft" style="width: 54.8%;"></div></div> <!-- 23 -->
+              <div class="bar-row"><div class="bar soft" style="width: 57.1%;"></div></div> <!-- 24 -->
+              <div class="bar-row"><div class="bar" style="width: 73.8%;"></div></div>     <!-- 31 -->
+              <div class="bar-row"><div class="bar soft" style="width: 57.1%;"></div></div> <!-- 24 -->
+              <div class="bar-row"><div class="bar soft" style="width: 57.1%;"></div></div> <!-- 24 -->
+              <div class="bar-row"><div class="bar soft" style="width: 54.8%;"></div></div> <!-- 23 -->
+              <div class="bar-row"><div class="bar soft" style="width: 50.0%;"></div></div> <!-- 21 -->
+              <div class="bar-row"><div class="bar" style="width: 66.7%;"></div></div>     <!-- 28 -->
+              <div class="bar-row"><div class="bar" style="width: 66.7%;"></div></div>     <!-- 28 -->
+              <div class="bar-row"><div class="bar soft" style="width: 57.1%;"></div></div> <!-- 24 -->
+              <div class="bar-row"><div class="bar soft" style="width: 50.0%;"></div></div> <!-- 21 -->
+              <div class="bar-row"><div class="bar soft" style="width: 54.8%;"></div></div> <!-- 23 -->
+              <div class="bar-row"><div class="bar soft" style="width: 52.4%;"></div></div> <!-- 22 -->
+              <div class="bar-row"><div class="bar" style="width: 61.9%;"></div></div>     <!-- 26 -->
+              <div class="bar-row"><div class="bar" style="width: 73.8%;"></div></div>     <!-- 31 -->
+              <div class="bar-row"><div class="bar" style="width: 73.8%;"></div></div>     <!-- 31 -->
+              <div class="bar-row"><div class="bar" style="width: 61.9%;"></div></div>     <!-- 26 -->
+              <div class="bar-row"><div class="bar" style="width: 66.7%;"></div></div>     <!-- 28 -->
+              <div class="bar-row"><div class="bar" style="width: 66.7%;"></div></div>     <!-- 28 -->
+              <div class="xgrid"></div>
+              <!-- 主刻度 -->
+              <div class="xaxis" aria-hidden="true">
+                <span>0</span><span>14</span><span>28</span><span>42</span>
+              </div>
+              <!-- 次级刻度：删除26；把22改为21 -->
+              <div class="xaxis secondary" aria-hidden="true">
+                <span class="tick v21">21</span>
+                <span class="tick v31">31</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧：关键数字（Max-31 更靠近；标签左对齐） -->
+        <aside class="panel" aria-label="关键数字">
+          <div class="kv avg">
+            <div class="k">Average</div>
+            <div class="v">28.16</div>
+          </div>
+          <div class="kv duo">
+            <div class="k">Max</div>
+            <div class="v">31</div>
+            <div class="k">Min</div>
+            <div class="v">21</div>
+          </div>
+          <div class="kv">
+            <div class="k">Cohort</div>
+            <div class="v">19</div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>
