@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark Lab - Quote Wall Collection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Space+Grotesk:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+            background: transparent;
+            padding: 0;
+        }
+        
+        .quote-container {
+            page-break-after: always;
+            page-break-inside: avoid;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 8vw;
+            position: relative;
+            background: transparent;
+        }
+        
+        .quote-text {
+            font-size: clamp(2rem, 5vw, 6rem);
+            line-height: 1.2;
+            text-align: center;
+            color: #1a1a1a;
+            max-width: 90%;
+            margin-bottom: 4vh;
+        }
+        
+        .quote-text.english {
+            font-family: 'Space Grotesk', 'Impact', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        
+        .quote-text.chinese {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+        
+        .quote-text.mixed {
+            font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+            font-weight: 600;
+        }
+        
+        .quote-text.spark-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+        }
+        
+        .author {
+            position: absolute;
+            bottom: 6vh;
+            right: 6vw;
+            font-size: clamp(1rem, 1.5vw, 1.8rem);
+            color: #fa5c21;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            text-align: right;
+        }
+        
+        /* Special styles for specific quotes */
+        .eraser-effect {
+            position: relative;
+        }
+        
+        .eraser-effect .faded {
+            opacity: 0.3;
+            text-decoration: line-through;
+        }
+        
+        .strikethrough {
+            text-decoration: line-through;
+            opacity: 0.4;
+        }
+        
+        .italic {
+            font-style: italic;
+            font-weight: 400;
+        }
+        
+        @media print {
+            .quote-container {
+                page-break-after: always;
+            }
+        }
+        
+        /* Navigation hint - can be hidden for print */
+        .nav-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #999;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        @media print {
+            .nav-hint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Spark Lab Original -->
+<div class="quote-container">
+    <div class="quote-text spark-brand">
+        Not every spark leads somewhere.<br>
+        But every journey starts with one.<br>
+        So what's yours?
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<div class="quote-container">
+    <div class="quote-text chinese">
+        并不是每一束火花都会通向远方，<br>
+        但每一段旅程，都始于一束火光。<br>
+        那么，你的呢？
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<!-- Do Epic Shit -->
+<div class="quote-container eraser-effect">
+    <div class="quote-text english">
+        DO <span class="faded">EPIC</span> <span class="faded">SH</span> IT
+    </div>
+    <div class="author">Action First</div>
+</div>
+
+<!-- Steve Jobs - Crazy Ones -->
+<div class="quote-container">
+    <div class="quote-text english">
+        The people who are crazy enough<br>
+        to think they can change the world<br>
+        are the ones who do.
+    </div>
+    <div class="author">Steve Jobs</div>
+</div>
+
+<!-- Oscar Wilde -->
+<div class="quote-container">
+    <div class="quote-text english">
+        We are all in the gutter,<br>
+        but some of us are looking<br>
+        at the stars.
+    </div>
+    <div class="author">Oscar Wilde</div>
+</div>
+
+<!-- 燃烧的人 -->
+<div class="quote-container">
+    <div class="quote-text chinese">
+        那些真正在燃烧的人，<br>
+        看起来和别人没什么两样。<br>
+        但当你靠近时，<br>
+        你能感受到热度。
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<!-- Pierre Bonnard -->
+<div class="quote-container">
+    <div class="quote-text english">
+        I belong to no school;<br>
+        I seek only to create<br>
+        something personal.
+    </div>
+    <div class="author">Pierre Bonnard, 1891</div>
+</div>
+
+<div class="quote-container">
+    <div class="quote-text chinese">
+        我不属于任何流派；<br>
+        我只想创造属于自己的艺术。
+    </div>
+    <div class="author">皮埃尔·博纳尔, 1891年</div>
+</div>
+
+<!-- Y.B. Mangunwijaya -->
+<div class="quote-container">
+    <div class="quote-text chinese">
+        也许你还没有发现<br>
+        什么表面上的异常，<br>
+        但在看不见的地方，<br>
+        它正在燃烧。
+    </div>
+    <div class="author">Y.B. Mangunwijaya, 1998</div>
+</div>
+
+<!-- Steve Jobs - Move On -->
+<div class="quote-container">
+    <div class="quote-text english">
+        If you do something and it turns out<br>
+        pretty good, then you should go do<br>
+        something else wonderful,<br>
+        not dwell on it for too long.<br>
+        Just figure out what's next.
+    </div>
+    <div class="author">Steve Jobs</div>
+</div>
+
+<!-- Hemingway - First Drafts -->
+<div class="quote-container eraser-effect">
+    <div class="quote-text english">
+        <span class="strikethrough">All</span> The first draft<span class="strikethrough">s</span> of <span class="strikethrough">everything</span> anything <span class="strikethrough">are garbage</span> <span style="font-style: italic;">is</span> shit
+    </div>
+    <div class="author">Ernest Hemingway</div>
+</div>
+
+<!-- 科技是浪漫生活的来源 -->
+<div class="quote-container">
+    <div class="quote-text chinese">
+        科技是我们浪漫生活的来源
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<!-- Spark the New Renaissance -->
+<div class="quote-container">
+    <div class="quote-text spark-brand">
+        Spark the New Renaissance.
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.8rem, 4vw, 5rem);">
+        From spark to startup —<br>
+        We help young founders<br>
+        turn their spark into legacy.
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<!-- Everything begins with a Spark -->
+<div class="quote-container">
+    <div class="quote-text spark-brand">
+        Everything begins<br>
+        with a Spark
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<!-- Create the company you wish existed -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Create the company<br>
+        you wish existed.
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<!-- Paul Graham - Make something -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Make something people want<br>
+        includes making things<br>
+        you want.
+    </div>
+    <div class="author">Paul Graham</div>
+</div>
+
+<!-- Picasso - Good taste -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Good taste is the enemy<br>
+        of creativity.
+    </div>
+    <div class="author">Pablo Picasso</div>
+</div>
+
+<!-- Alan Kay -->
+<div class="quote-container">
+    <div class="quote-text english">
+        The best way to predict<br>
+        the future is to invent it.
+    </div>
+    <div class="author">Alan Kay</div>
+</div>
+
+<!-- Paul Graham - Hackers -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Hackers are painters.<br>
+        They draw with code.
+    </div>
+    <div class="author">Paul Graham</div>
+</div>
+
+<!-- Talk is cheap -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Talk is cheap.<br>
+        Show me the Code.
+    </div>
+    <div class="author">Linus Torvalds</div>
+</div>
+
+<!-- Code is cheap - reversed -->
+<div class="quote-container">
+    <div class="quote-text english italic">
+        Code is cheap.<br>
+        Show me the Talk.
+    </div>
+    <div class="author">Spark Lab</div>
+</div>
+
+<!-- Move fast -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Move fast and<br>
+        break things.
+    </div>
+    <div class="author">Facebook</div>
+</div>
+
+<!-- Real artists ship -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Real artists ship.
+    </div>
+    <div class="author">Steve Jobs</div>
+</div>
+
+<!-- Prototype first -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Prototype first.<br>
+        Perfect never.
+    </div>
+    <div class="author">Maker Culture</div>
+</div>
+
+<!-- Done is better -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Done is better<br>
+        than perfect.
+    </div>
+    <div class="author">Sheryl Sandberg</div>
+</div>
+
+<!-- Hal Abelson - Programs -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        Programs must be written<br>
+        for people to read,<br>
+        and only incidentally<br>
+        for machines to execute.
+    </div>
+    <div class="author">Hal Abelson</div>
+</div>
+
+<!-- Bill Gates -->
+<div class="quote-container">
+    <div class="quote-text english">
+        The computer was born<br>
+        to solve problems<br>
+        that did not exist before.
+    </div>
+    <div class="author">Bill Gates</div>
+</div>
+
+<!-- Code is poetry -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Code is poetry.
+    </div>
+    <div class="author">WordPress</div>
+</div>
+
+<!-- Arthur C. Clarke -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        Any sufficiently advanced<br>
+        technology is indistinguishable<br>
+        from magic.
+    </div>
+    <div class="author">Arthur C. Clarke</div>
+</div>
+
+<!-- Jeff Atwood -->
+<div class="quote-container">
+    <div class="quote-text english">
+        The best code is<br>
+        no code at all.
+    </div>
+    <div class="author">Jeff Atwood</div>
+</div>
+
+<!-- Stay hungry -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Stay hungry.<br>
+        Stay foolish.
+    </div>
+    <div class="author">Stewart Brand → Steve Jobs</div>
+</div>
+
+<!-- Love what you do -->
+<div class="quote-container">
+    <div class="quote-text english">
+        The only way to do great work<br>
+        is to love what you do.
+    </div>
+    <div class="author">Steve Jobs</div>
+</div>
+
+<!-- Zuckerberg - Services -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        We don't build services<br>
+        to make money;<br>
+        we make money to build<br>
+        better services.
+    </div>
+    <div class="author">Mark Zuckerberg</div>
+</div>
+
+<!-- Think different -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Think different.
+    </div>
+    <div class="author">Apple</div>
+</div>
+
+<!-- Keep Thinking -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Keep Thinking.
+    </div>
+    <div class="author">Claude</div>
+</div>
+
+<!-- Naval - Monkey -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        Don't take yourself<br>
+        so seriously.<br>
+        You're just a monkey<br>
+        with a plan.
+    </div>
+    <div class="author">Naval Ravikant</div>
+</div>
+
+<!-- Make good new things -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Make good new things
+    </div>
+    <div class="author">Paul Graham</div>
+</div>
+
+<!-- Robert Frost -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        Two roads diverged in a wood,<br>
+        and I took the one less traveled by,<br>
+        and that has made all the difference.
+    </div>
+    <div class="author">Robert Frost</div>
+</div>
+
+<!-- Oscar Wilde - Be yourself -->
+<div class="quote-container">
+    <div class="quote-text english">
+        Be yourself;<br>
+        everyone else is<br>
+        already taken.
+    </div>
+    <div class="author">Oscar Wilde</div>
+</div>
+
+<!-- Howard Thurman -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        Don't ask what the world needs.<br>
+        Ask what makes you come alive,<br>
+        and go do it.
+    </div>
+    <div class="author">Howard Thurman</div>
+</div>
+
+<!-- Reid Hoffman -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        If you're not embarrassed<br>
+        by the first version of your product,<br>
+        you've launched too late.
+    </div>
+    <div class="author">Reid Hoffman</div>
+</div>
+
+<!-- Saint-Exupéry -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        Perfection is achieved<br>
+        not when there is nothing<br>
+        more to add,<br>
+        but when there is nothing<br>
+        left to take away.
+    </div>
+    <div class="author">Antoine de Saint-Exupéry</div>
+</div>
+
+<!-- Eleanor Roosevelt -->
+<div class="quote-container">
+    <div class="quote-text english" style="font-size: clamp(1.5rem, 3.5vw, 4.5rem);">
+        The future belongs to those<br>
+        who believe in the beauty<br>
+        of their dreams.
+    </div>
+    <div class="author">Eleanor Roosevelt</div>
+</div>
+
+<div class="nav-hint">Press Ctrl+P to print individual quotes as posters</div>
+
+<script>
+// Optional: Add keyboard navigation
+document.addEventListener('keydown', (e) => {
+    const containers = document.querySelectorAll('.quote-container');
+    const current = Array.from(containers).findIndex(c => {
+        const rect = c.getBoundingClientRect();
+        return rect.top >= 0 && rect.top < window.innerHeight;
+    });
+    
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        if (current < containers.length - 1) {
+            containers[current + 1].scrollIntoView({ behavior: 'smooth' });
+        }
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        if (current > 0) {
+            containers[current - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+});
+</script>
+
+</body>
+</html>
