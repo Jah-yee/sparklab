@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark Lab Quote Wall - Version 2 (Visual Flow)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&family=Noto+Sans+SC:wght@500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+            background: #ffffff;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .wall-container {
+            width: 2600px;
+            height: 900px;
+            background: #ffffff;
+            position: relative;
+            padding: 50px;
+        }
+        
+        .quote-block {
+            position: absolute;
+            color: #fa5c21;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .quote-text {
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+        
+        .author {
+            color: #fa5c21;
+            font-weight: 500;
+            opacity: 0.85;
+            text-align: right;
+            margin-top: 8px;
+        }
+        
+        /* Size variations for visual hierarchy */
+        .size-l {
+            font-size: 56px;
+            font-weight: 700;
+        }
+        
+        .size-m {
+            font-size: 42px;
+            font-weight: 600;
+        }
+        
+        .size-s {
+            font-size: 34px;
+            font-weight: 500;
+        }
+        
+        .author-l { font-size: 20px; }
+        .author-m { font-size: 18px; }
+        .author-s { font-size: 16px; }
+        
+        .english {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.01em;
+        }
+        
+        .chinese {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .uppercase {
+            text-transform: uppercase;
+        }
+        
+        .italic {
+            font-style: italic;
+        }
+        
+        .strikethrough {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+        
+        .fade {
+            opacity: 0.4;
+        }
+        
+        @media print {
+            body {
+                margin: 0;
+            }
+            .wall-container {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wall-container">
+    
+    <!-- Top row - left to right -->
+    <div class="quote-block" style="top: 60px; left: 60px; width: 480px;">
+        <div class="quote-text size-l english uppercase">
+            Everything begins<br>with a Spark
+        </div>
+    </div>
+    
+    <div class="quote-block" style="top: 80px; left: 620px; width: 380px;">
+        <div class="quote-text size-m english">
+            Real artists ship.
+        </div>
+        <div class="author author-m">— Steve Jobs</div>
+    </div>
+    
+    <div class="quote-block" style="top: 60px; left: 1080px; width: 420px;">
+        <div class="quote-text size-s english">
+            The people who are<br>crazy enough to think<br>they can change the world<br>are the ones who do.
+        </div>
+        <div class="author author-s">— Steve Jobs</div>
+    </div>
+    
+    <div class="quote-block" style="top: 70px; left: 1580px; width: 380px;">
+        <div class="quote-text size-m chinese">
+            科技是我们<br>浪漫生活的来源
+        </div>
+    </div>
+    
+    <div class="quote-block" style="top: 90px; left: 2040px; width: 460px;">
+        <div class="quote-text size-s english">
+            Make something people want<br>includes making things<br>you want.
+        </div>
+        <div class="author author-s">— Paul Graham</div>
+    </div>
+    
+    <!-- Middle row -->
+    <div class="quote-block" style="top: 340px; left: 60px; width: 360px;">
+        <div class="quote-text size-m english">
+            Code is poetry.
+        </div>
+        <div class="author author-m">— WordPress</div>
+    </div>
+    
+    <div class="quote-block" style="top: 300px; left: 500px; width: 580px;">
+        <div class="quote-text size-l chinese">
+            那些真正在燃烧的人，<br>看起来和别人没什么两样。<br>但当你靠近时，<br>你能感受到热度。
+        </div>
+    </div>
+    
+    <div class="quote-block" style="top: 320px; left: 1160px; width: 380px;">
+        <div class="quote-text size-s english">
+            We are all in the gutter,<br>but some of us are looking<br>at the stars.
+        </div>
+        <div class="author author-s">— Oscar Wilde</div>
+    </div>
+    
+    <div class="quote-block" style="top: 340px; left: 1620px; width: 320px;">
+        <div class="quote-text size-m english">
+            Think<br>different.
+        </div>
+        <div class="author author-m">— Apple</div>
+    </div>
+    
+    <div class="quote-block" style="top: 300px; left: 2020px; width: 440px;">
+        <div class="quote-text size-s english">
+            The best way to predict<br>the future is to invent it.
+        </div>
+        <div class="author author-s">— Alan Kay</div>
+    </div>
+    
+    <!-- Bottom row -->
+    <div class="quote-block" style="top: 600px; left: 60px; width: 360px;">
+        <div class="quote-text size-m english">
+            Move fast and<br>break things.
+        </div>
+        <div class="author author-m">— Facebook</div>
+    </div>
+    
+    <div class="quote-block" style="top: 580px; left: 500px; width: 520px;">
+        <div class="quote-text size-l english">
+            I belong to no school;<br>I seek only to create<br>something personal.
+        </div>
+        <div class="author author-l">— Pierre Bonnard</div>
+    </div>
+    
+    <div class="quote-block" style="top: 610px; left: 1100px; width: 380px;">
+        <div class="quote-text size-s english">
+            Hackers are painters.<br>They draw with code.
+        </div>
+        <div class="author author-s">— Paul Graham</div>
+    </div>
+    
+    <div class="quote-block" style="top: 600px; left: 1560px; width: 340px;">
+        <div class="quote-text size-m english">
+            Stay hungry.<br>Stay foolish.
+        </div>
+        <div class="author author-m">— Steve Jobs</div>
+    </div>
+    
+    <div class="quote-block" style="top: 590px; left: 1980px; width: 480px;">
+        <div class="quote-text size-s chinese">
+            也许你还没有发现<br>什么表面上的异常，<br>但在看不见的地方，<br>它正在燃烧。
+        </div>
+        <div class="author author-s">— Y.B. Mangunwijaya</div>
+    </div>
+    
+    <!-- Additional quotes in gaps -->
+    <div class="quote-block" style="top: 760px; left: 500px; width: 360px;">
+        <div class="quote-text size-s english">
+            Done is better<br>than perfect.
+        </div>
+        <div class="author author-s">— Sheryl Sandberg</div>
+    </div>
+    
+    <div class="quote-block" style="top: 740px; left: 940px; width: 540px;">
+        <div class="quote-text size-l english uppercase">
+            Create the company<br>you wish existed.
+        </div>
+    </div>
+    
+    <div class="quote-block" style="top: 760px; left: 1560px; width: 360px;">
+        <div class="quote-text size-s english">
+            Good taste is the enemy<br>of creativity.
+        </div>
+        <div class="author author-s">— Pablo Picasso</div>
+    </div>
+
+</div>
+
+</body>
+</html>
