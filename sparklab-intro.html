@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spark Lab — One Page Intro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coral: #FF6B5B;
+      --coral-light: #FFE8E5;
+      --charcoal: #1a1a1a;
+      --warm-gray: #4a4a4a;
+      --light-gray: #f8f7f5;
+      --cream: #fdfcfa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 28mm 24mm;
+      margin: 0 auto;
+      background: var(--cream);
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      fill: var(--coral);
+    }
+
+    .logo-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--charcoal);
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .header-right a {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--coral);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+
+    /* Hero */
+    .hero {
+      margin-bottom: 36px;
+    }
+
+    .hero-tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1.25;
+      color: var(--charcoal);
+      margin-bottom: 16px;
+      max-width: 520px;
+    }
+
+    .hero-tagline em {
+      font-style: normal;
+      color: var(--coral);
+    }
+
+    .hero-subline {
+      font-size: 14px;
+      color: var(--warm-gray);
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .section {
+      padding: 0;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--coral);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: var(--charcoal);
+    }
+
+    .section-text {
+      font-size: 12.5px;
+      color: var(--warm-gray);
+      line-height: 1.75;
+    }
+
+    /* What You Get - Special styling */
+    .offer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .offer-item {
+      background: white;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .offer-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--coral);
+      margin-bottom: 4px;
+    }
+
+    .offer-desc {
+      font-size: 11px;
+      color: var(--warm-gray);
+      line-height: 1.5;
+    }
+
+    /* Who We Look For */
+    .trait-list {
+      margin-top: 12px;
+    }
+
+    .trait {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .trait-marker {
+      width: 6px;
+      height: 6px;
+      background: var(--coral);
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .trait-text {
+      font-size: 12px;
+      color: var(--warm-gray);
+      line-height: 1.6;
+    }
+
+    /* Philosophy Quote */
+    .philosophy-bar {
+      background: linear-gradient(135deg, var(--coral-light) 0%, white 100%);
+      padding: 20px 24px;
+      border-radius: 10px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .philosophy-bar::before {
+      content: '"';
+      font-family: 'Playfair Display', serif;
+      font-size: 72px;
+      position: absolute;
+      top: -8px;
+      left: 16px;
+      color: var(--coral);
+      opacity: 0.15;
+    }
+
+    .philosophy-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--charcoal);
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Not An Accelerator */
+    .differentiator {
+      background: var(--charcoal);
+      color: white;
+      padding: 18px 22px;
+      border-radius: 10px;
+      margin-bottom: 28px;
+    }
+
+    .diff-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      opacity: 0.6;
+      margin-bottom: 10px;
+    }
+
+    .diff-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .diff-column h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: white;
+    }
+
+    .diff-column p {
+      font-size: 11px;
+      line-height: 1.65;
+      opacity: 0.75;
+    }
+
+    /* Footer */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      margin-top: auto;
+    }
+
+    .footer-left {
+      font-size: 11px;
+      color: var(--warm-gray);
+    }
+
+    .footer-left strong {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--coral);
+      margin-bottom: 6px;
+    }
+
+    .footer-right {
+      text-align: right;
+    }
+
+    .apply-link {
+      display: inline-block;
+      background: var(--coral);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .apply-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255,107,91,0.3);
+    }
+
+    .footer-note {
+      font-size: 9px;
+      color: var(--warm-gray);
+      opacity: 0.7;
+      margin-top: 8px;
+    }
+
+    /* Decorative */
+    .corner-accent {
+      position: absolute;
+      top: 20mm;
+      right: 20mm;
+      width: 60px;
+      height: 60px;
+      opacity: 0.06;
+    }
+
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .page {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Decorative corner -->
+    <svg class="corner-accent" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="1"/>
+      <circle cx="50" cy="50" r="15" fill="currentColor"/>
+    </svg>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-area">
+        <svg class="logo-icon" viewBox="0 0 100 100">
+          <polygon points="50,5 95,90 5,90" fill="currentColor"/>
+        </svg>
+        <span class="logo-text">SPARK LAB</span>
+      </div>
+      <div class="header-right">
+        <a href="https://sparklab.city">sparklab.city</a>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-tagline">From Spark to Startup — We help young founders turn their <em>obsession</em> into legacy.</h1>
+      <p class="hero-subline">Spark Lab is a founder residency program for the 0-to-0.1 stage. Not an accelerator. Not a VC fund. A cultural home for builders who refuse to wait for permission.</p>
+    </section>
+
+    <!-- Philosophy Quote -->
+    <div class="philosophy-bar">
+      <p class="philosophy-text">When artists gather, they talk about where to buy the cheapest turpentine. We built a place where founders can do the same — obsess over craft, not performance.</p>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+      <!-- What You Get -->
+      <section class="section">
+        <div class="section-label">What You Get</div>
+        <div class="section-title">Everything you need. Nothing you don't.</div>
+        <div class="offer-grid">
+          <div class="offer-item">
+            <div class="offer-number">$10K</div>
+            <div class="offer-desc">Uncapped SAFE for every team — trust first, price later</div>
+          </div>
+          <div class="offer-item">
+            <div class="offer-number">$1M</div>
+            <div class="offer-desc">Follow-on funding available based on progress</div>
+          </div>
+          <div class="offer-item">
+            <div class="offer-number">12 wks</div>
+            <div class="offer-desc">Co-living residency — aim for 12 months of progress</div>
+          </div>
+          <div class="offer-item">
+            <div class="offer-number">∞</div>
+            <div class="offer-desc">Lifetime alumni network & community access</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Who We Look For -->
+      <section class="section">
+        <div class="section-label">Who We Look For</div>
+        <div class="section-title">High-agency builders, age 18-25.</div>
+        <div class="trait-list">
+          <div class="trait">
+            <span class="trait-marker"></span>
+            <span class="trait-text">You've already started building — not just ideating</span>
+          </div>
+          <div class="trait">
+            <span class="trait-marker"></span>
+            <span class="trait-text">You have strong opinions, loosely held</span>
+          </div>
+          <div class="trait">
+            <span class="trait-marker"></span>
+            <span class="trait-text">You're resourceful — you create opportunities, not wait for them</span>
+          </div>
+          <div class="trait">
+            <span class="trait-marker"></span>
+            <span class="trait-text">You'd apply even without the funding</span>
+          </div>
+          <div class="trait">
+            <span class="trait-marker"></span>
+            <span class="trait-text">You want co-founders for life, not just a cohort</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Differentiator -->
+    <div class="differentiator">
+      <div class="diff-title">Why We're Different</div>
+      <div class="diff-content">
+        <div class="diff-column">
+          <h4>Traditional Accelerators</h4>
+          <p>Lectures, demo days, mentor speed-dating. Designed for Series A readiness. Heavy on networking theater, light on actual building time.</p>
+        </div>
+        <div class="diff-column">
+          <h4>Spark Lab</h4>
+          <p>Founder-only sanctuary. No VCs, no media inside. Weekly dinners, not scheduled lectures. We do subtraction, not addition. You build; we protect your focus.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-left">
+        <strong>Program Details</strong>
+        ~10 teams per cohort · 1% acceptance rate<br>
+        Biannual cohorts · Applications rolling
+      </div>
+      <div class="footer-right">
+        <a href="https://sparklab.city/apply" class="apply-link">APPLY NOW →</a>
+        <p class="footer-note">Contact: hello@sparklab.city</p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
