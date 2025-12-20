@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Residency Accelerator Programs Research</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F7F5F0;
+            color: #2C2825;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .page {
+            width: 1400px;
+            margin: 0 auto;
+            padding: 60px 80px;
+            background: #FFFEF9;
+            min-height: 100vh;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #E8E4DC;
+        }
+        
+        .header-left h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1A1816;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+        
+        .header-left h2 {
+            font-size: 18px;
+            font-weight: 400;
+            color: #8C8478;
+            letter-spacing: 0.5px;
+        }
+        
+        .header-right {
+            text-align: right;
+            font-size: 11px;
+            color: #A9A299;
+            line-height: 1.8;
+        }
+        
+        .header-right .logo {
+            font-weight: 600;
+            font-size: 13px;
+            color: #6B6560;
+            margin-bottom: 4px;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 50px;
+        }
+        
+        .chart-area {
+            position: relative;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 520px;
+            margin-left: 100px;
+            border-left: 1px solid #D9D4C9;
+            border-bottom: 1px solid #D9D4C9;
+        }
+        
+        .y-axis {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 100px;
+        }
+        
+        .y-tier {
+            position: absolute;
+            left: 0;
+            right: 12px;
+            text-align: right;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .y-tier span {
+            display: block;
+            font-size: 9px;
+            font-weight: 400;
+            color: #A9A299;
+            margin-top: 2px;
+        }
+        
+        .tier-band {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-top: 1px dashed #E8E4DC;
+        }
+        
+        .x-axis {
+            position: absolute;
+            bottom: -28px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        
+        .x-label {
+            font-size: 10px;
+            color: #A9A299;
+            font-weight: 500;
+        }
+        
+        .bubble-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        .bubble-group {
+            position: absolute;
+        }
+        
+        .bubble {
+            border-radius: 50%;
+            opacity: 0.85;
+        }
+        
+        .bubble-label {
+            position: absolute;
+            font-size: 8px;
+            font-weight: 500;
+            color: #4A4540;
+            white-space: nowrap;
+            letter-spacing: -0.2px;
+        }
+        
+        .bubble-label.light {
+            color: #8C8478;
+        }
+        
+        /* Tier Colors - Refined Palette */
+        .t1 { background: #2D5A7B; }
+        .t15 { background: #5B8C5A; }
+        .t2 { background: #C9A857; }
+        .t3 { background: #C17B6E; }
+        
+        .mandatory-ring {
+            position: absolute;
+            border: 2px solid;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+        
+        .mandatory-ring.t1 { border-color: #2D5A7B; }
+        .mandatory-ring.t15 { border-color: #5B8C5A; }
+        .mandatory-ring.t2 { border-color: #C9A857; }
+        .mandatory-ring.t3 { border-color: #C17B6E; }
+        
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .legend-box {
+            background: #F7F5F0;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .legend-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4A4540;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #E8E4DC;
+        }
+        
+        .legend-section {
+            margin-bottom: 20px;
+        }
+        
+        .legend-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .legend-section-title {
+            font-size: 9px;
+            font-weight: 600;
+            color: #8C8478;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+        }
+        
+        .tier-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .tier-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tier-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .tier-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tier-name {
+            font-size: 10px;
+            font-weight: 500;
+            color: #4A4540;
+        }
+        
+        .tier-count {
+            font-size: 9px;
+            color: #A9A299;
+        }
+        
+        .size-legend {
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        
+        .size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .size-circle {
+            background: #D9D4C9;
+            border-radius: 50%;
+        }
+        
+        .size-text {
+            font-size: 8px;
+            color: #A9A299;
+        }
+        
+        .residency-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .residency-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .residency-icon {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .residency-inner {
+            width: 12px;
+            height: 12px;
+            background: #B8B3A8;
+            border-radius: 50%;
+        }
+        
+        .residency-outer {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #B8B3A8;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        
+        .residency-text {
+            font-size: 9px;
+            color: #6B6560;
+            line-height: 1.4;
+        }
+        
+        .program-list-box {
+            background: #F7F5F0;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .program-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #E8E4DC;
+        }
+        
+        .program-list-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4A4540;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .program-list-count {
+            font-size: 10px;
+            color: #A9A299;
+        }
+        
+        .program-tier-group {
+            margin-bottom: 16px;
+        }
+        
+        .program-tier-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .program-tier-header {
+            font-size: 9px;
+            font-weight: 600;
+            color: #8C8478;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .program-tier-line {
+            flex: 1;
+            height: 1px;
+            background: #E8E4DC;
+        }
+        
+        .program-item {
+            display: flex;
+            align-items: baseline;
+            padding: 4px 0;
+            font-size: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+        
+        .program-item:last-child {
+            border-bottom: none;
+        }
+        
+        .program-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        
+        .program-name {
+            flex: 1;
+            font-weight: 500;
+            color: #4A4540;
+        }
+        
+        .program-meta {
+            font-size: 9px;
+            color: #A9A299;
+            text-align: right;
+        }
+        
+        .program-investment {
+            font-weight: 500;
+            color: #6B6560;
+            min-width: 50px;
+            text-align: right;
+        }
+        
+        .insights-box {
+            background: linear-gradient(135deg, #F0EDE6 0%, #E8E4DC 100%);
+            border-radius: 8px;
+            padding: 24px;
+            border-left: 3px solid #8C8478;
+        }
+        
+        .insights-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: #6B6560;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        
+        .insight-item {
+            font-size: 11px;
+            color: #4A4540;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            padding-left: 12px;
+            position: relative;
+        }
+        
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .insight-item::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #8C8478;
+            font-size: 10px;
+        }
+        
+        .insight-highlight {
+            font-weight: 600;
+            color: #2D5A7B;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid #E8E4DC;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .footer-left {
+            max-width: 600px;
+        }
+        
+        .footer-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: #6B6560;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .footer-text {
+            font-size: 9px;
+            color: #A9A299;
+            line-height: 1.7;
+        }
+        
+        .footer-right {
+            text-align: right;
+            font-size: 9px;
+            color: #A9A299;
+        }
+        
+        .analysis-panel {
+            background: #FFFEF9;
+            border: 1px solid #E8E4DC;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .analysis-item {
+            text-align: center;
+            padding: 16px;
+            background: #F7F5F0;
+            border-radius: 6px;
+        }
+        
+        .analysis-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2D5A7B;
+            margin-bottom: 4px;
+        }
+        
+        .analysis-label {
+            font-size: 9px;
+            color: #8C8478;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stage-indicator {
+            display: inline-block;
+            font-size: 7px;
+            padding: 1px 4px;
+            background: rgba(0,0,0,0.06);
+            border-radius: 2px;
+            color: #8C8478;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <div class="header-left">
+                <h1>Residency Accelerator Programs</h1>
+                <h2>驻地加速器项目研究清单</h2>
+            </div>
+            <div class="header-right">
+                <div class="logo">Research Project</div>
+                <div>Data as of December 2025</div>
+                <div>25 Programs Analyzed</div>
+            </div>
+        </div>
+        
+        <div class="main-layout">
+            <div class="chart-area">
+                <div class="y-axis">
+                    <div class="y-tier" style="top: 8%; color: #2D5A7B;">
+                        TIER 1
+                        <span>4 programs</span>
+                    </div>
+                    <div class="y-tier" style="top: 28%; color: #5B8C5A;">
+                        TIER 1.5
+                        <span>5 programs</span>
+                    </div>
+                    <div class="y-tier" style="top: 52%; color: #C9A857;">
+                        TIER 2
+                        <span>8 programs</span>
+                    </div>
+                    <div class="y-tier" style="top: 78%; color: #C17B6E;">
+                        TIER 3
+                        <span>8 programs</span>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <!-- Tier bands -->
+                    <div class="tier-band" style="top: 20%;"></div>
+                    <div class="tier-band" style="top: 42%;"></div>
+                    <div class="tier-band" style="top: 68%;"></div>
+                    
+                    <!-- Year grid lines -->
+                    <div style="position: absolute; left: 0%; top: 0; bottom: 0; width: 1px; background: #E8E4DC;"></div>
+                    <div style="position: absolute; left: 25%; top: 0; bottom: 0; width: 1px; background: #E8E4DC;"></div>
+                    <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: #E8E4DC;"></div>
+                    <div style="position: absolute; left: 75%; top: 0; bottom: 0; width: 1px; background: #E8E4DC;"></div>
+                    <div style="position: absolute; left: 100%; top: 0; bottom: 0; width: 1px; background: #E8E4DC;"></div>
+                    
+                    <div class="bubble-container">
+                        <!-- TIER 1 -->
+                        <!-- YC 2005, $500K -->
+                        <div class="bubble-group" style="left: 0%; top: 6%;">
+                            <div class="bubble t1" style="width: 42px; height: 42px;"></div>
+                            <div class="bubble-label" style="left: 48px; top: 12px;">Y Combinator<span class="stage-indicator">ALL</span></div>
+                        </div>
+                        
+                        <!-- SPC 2016, $1M -->
+                        <div class="bubble-group" style="left: 52%; top: 4%;">
+                            <div class="bubble t1" style="width: 52px; height: 52px;"></div>
+                            <div class="bubble-label" style="left: 58px; top: 16px;">South Park Commons<span class="stage-indicator">-1→0</span></div>
+                        </div>
+                        
+                        <!-- Neo 2017, $600K, mandatory -->
+                        <div class="bubble-group" style="left: 58%; top: 12%;">
+                            <div class="mandatory-ring t1" style="width: 54px; height: 54px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t1" style="width: 44px; height: 44px;"></div>
+                            <div class="bubble-label" style="left: 50px; top: 14px;">Neo<span class="stage-indicator">PRE-SEED</span></div>
+                        </div>
+                        
+                        <!-- HF0 2022, $1M, mandatory -->
+                        <div class="bubble-group" style="left: 82%; top: 8%;">
+                            <div class="mandatory-ring t1" style="width: 62px; height: 62px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t1" style="width: 52px; height: 52px;"></div>
+                            <div class="bubble-label" style="left: 58px; top: 16px;">HF0<span class="stage-indicator">MVP</span></div>
+                        </div>
+                        
+                        <!-- TIER 1.5 -->
+                        <!-- EF 2011, $250K, mandatory -->
+                        <div class="bubble-group" style="left: 28%; top: 26%;">
+                            <div class="mandatory-ring t15" style="width: 42px; height: 42px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t15" style="width: 32px; height: 32px;"></div>
+                            <div class="bubble-label" style="left: 38px; top: 8px;">Entrepreneur First<span class="stage-indicator">PRE-TEAM</span></div>
+                        </div>
+                        
+                        <!-- PearX 2015, $500K, mandatory -->
+                        <div class="bubble-group" style="left: 48%; top: 30%;">
+                            <div class="mandatory-ring t15" style="width: 52px; height: 52px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t15" style="width: 42px; height: 42px;"></div>
+                            <div class="bubble-label" style="left: 48px; top: 12px;">PearX<span class="stage-indicator">PRE-SEED</span></div>
+                        </div>
+                        
+                        <!-- F.inc 2021, $250K, mandatory -->
+                        <div class="bubble-group" style="left: 78%; top: 24%;">
+                            <div class="mandatory-ring t15" style="width: 42px; height: 42px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t15" style="width: 32px; height: 32px;"></div>
+                            <div class="bubble-label" style="left: 38px; top: 8px;">Founders Inc.<span class="stage-indicator">POST-TRACTION</span></div>
+                        </div>
+                        
+                        <!-- a16z SPEEDRUN 2022, $1M -->
+                        <div class="bubble-group" style="left: 82%; top: 34%;">
+                            <div class="bubble t15" style="width: 52px; height: 52px;"></div>
+                            <div class="bubble-label" style="left: 58px; top: 16px;">a16z SPEEDRUN<span class="stage-indicator">PRE-SEED</span></div>
+                        </div>
+                        
+                        <!-- Conviction 2023, $250K -->
+                        <div class="bubble-group" style="left: 90%; top: 28%;">
+                            <div class="bubble t15" style="width: 32px; height: 32px;"></div>
+                            <div class="bubble-label light" style="right: 38px; top: 8px;">Conviction Embed</div>
+                        </div>
+                        
+                        <!-- TIER 2 -->
+                        <!-- Techstars 2006, $220K -->
+                        <div class="bubble-group" style="left: 4%; top: 48%;">
+                            <div class="bubble t2" style="width: 30px; height: 30px;"></div>
+                            <div class="bubble-label" style="left: 36px; top: 6px;">Techstars</div>
+                        </div>
+                        
+                        <!-- 500 Global 2010, $150K -->
+                        <div class="bubble-group" style="left: 24%; top: 52%;">
+                            <div class="bubble t2" style="width: 26px; height: 26px;"></div>
+                            <div class="bubble-label" style="left: 32px; top: 4px;">500 Global</div>
+                        </div>
+                        
+                        <!-- AI2 2017, $600K -->
+                        <div class="bubble-group" style="left: 58%; top: 46%;">
+                            <div class="bubble t2" style="width: 44px; height: 44px;"></div>
+                            <div class="bubble-label" style="left: 50px; top: 12px;">AI2 Incubator<span class="stage-indicator">EARLY</span></div>
+                        </div>
+                        
+                        <!-- Antler 2017, $200K, mandatory -->
+                        <div class="bubble-group" style="left: 58%; top: 58%;">
+                            <div class="mandatory-ring t2" style="width: 38px; height: 38px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t2" style="width: 28px; height: 28px;"></div>
+                            <div class="bubble-label" style="left: 34px; top: 4px;">Antler<span class="stage-indicator">PRE-IDEA</span></div>
+                        </div>
+                        
+                        <!-- Z Fellows 2020, $10K -->
+                        <div class="bubble-group" style="left: 74%; top: 54%;">
+                            <div class="bubble t2" style="width: 18px; height: 18px;"></div>
+                            <div class="bubble-label" style="left: 24px; top: 0;">Z Fellows</div>
+                        </div>
+                        
+                        <!-- Roux 2020, $25K, mandatory -->
+                        <div class="bubble-group" style="left: 74%; top: 62%;">
+                            <div class="mandatory-ring t2" style="width: 28px; height: 28px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t2" style="width: 18px; height: 18px;"></div>
+                            <div class="bubble-label" style="left: 24px; top: 0;">Roux Residency<span class="stage-indicator">0% EQ</span></div>
+                        </div>
+                        
+                        <!-- Sequoia Arc 2022, $1M -->
+                        <div class="bubble-group" style="left: 82%; top: 50%;">
+                            <div class="bubble t2" style="width: 52px; height: 52px;"></div>
+                            <div class="bubble-label" style="left: 58px; top: 16px;">Sequoia Arc</div>
+                        </div>
+                        
+                        <!-- OpenAI Converge 2023, $500K -->
+                        <div class="bubble-group" style="left: 90%; top: 58%;">
+                            <div class="bubble t2" style="width: 42px; height: 42px;"></div>
+                            <div class="bubble-label light" style="right: 48px; top: 12px;">OpenAI Converge</div>
+                        </div>
+                        
+                        <!-- TIER 3 -->
+                        <!-- LAUNCH 2012, $100K -->
+                        <div class="bubble-group" style="left: 34%; top: 76%;">
+                            <div class="bubble t3" style="width: 22px; height: 22px;"></div>
+                            <div class="bubble-label" style="left: 28px; top: 2px;">LAUNCH</div>
+                        </div>
+                        
+                        <!-- AI Grant 2017, $250K -->
+                        <div class="bubble-group" style="left: 58%; top: 74%;">
+                            <div class="bubble t3" style="width: 32px; height: 32px;"></div>
+                            <div class="bubble-label" style="left: 38px; top: 8px;">AI Grant</div>
+                        </div>
+                        
+                        <!-- Village Global 2017, $100K -->
+                        <div class="bubble-group" style="left: 58%; top: 84%;">
+                            <div class="bubble t3" style="width: 22px; height: 22px;"></div>
+                            <div class="bubble-label" style="left: 28px; top: 2px;">Village Global</div>
+                        </div>
+                        
+                        <!-- Soma 2018, $100K -->
+                        <div class="bubble-group" style="left: 64%; top: 78%;">
+                            <div class="bubble t3" style="width: 22px; height: 22px;"></div>
+                            <div class="bubble-label" style="left: 28px; top: 2px;">Soma Capital</div>
+                        </div>
+                        
+                        <!-- ODF 2019, $125K, mandatory -->
+                        <div class="bubble-group" style="left: 70%; top: 72%;">
+                            <div class="mandatory-ring t3" style="width: 32px; height: 32px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t3" style="width: 22px; height: 22px;"></div>
+                            <div class="bubble-label" style="left: 28px; top: 2px;">On Deck SFP</div>
+                        </div>
+                        
+                        <!-- Prod 2021, $0 -->
+                        <div class="bubble-group" style="left: 78%; top: 82%;">
+                            <div class="bubble t3" style="width: 16px; height: 16px;"></div>
+                            <div class="bubble-label" style="left: 22px; top: -2px;">Prod<span class="stage-indicator">0% EQ</span></div>
+                        </div>
+                        
+                        <!-- The Residency 2023, $0, mandatory -->
+                        <div class="bubble-group" style="left: 90%; top: 76%;">
+                            <div class="mandatory-ring t3" style="width: 26px; height: 26px; left: -5px; top: -5px;"></div>
+                            <div class="bubble t3" style="width: 16px; height: 16px;"></div>
+                            <div class="bubble-label light" style="right: 22px; top: -2px;">The Residency</div>
+                        </div>
+                        
+                        <!-- Accel Atoms 2023, $500K -->
+                        <div class="bubble-group" style="left: 90%; top: 86%;">
+                            <div class="bubble t3" style="width: 42px; height: 42px;"></div>
+                            <div class="bubble-label light" style="right: 48px; top: 12px;">Accel Atoms</div>
+                        </div>
+                    </div>
+                    
+                    <div class="x-axis">
+                        <span class="x-label">2005</span>
+                        <span class="x-label">2010</span>
+                        <span class="x-label">2015</span>
+                        <span class="x-label">2020</span>
+                        <span class="x-label">2025</span>
+                    </div>
+                </div>
+                
+                <!-- Analysis Panel -->
+                <div class="analysis-panel">
+                    <div class="analysis-grid">
+                        <div class="analysis-item">
+                            <div class="analysis-value">$1M</div>
+                            <div class="analysis-label">Tier 1 平均投资</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="analysis-value" style="color: #5B8C5A;">6.5%</div>
+                            <div class="analysis-label">Tier 1 平均股权</div>
+                        </div>
+                        <div class="analysis-item">
+                            <div class="analysis-value" style="color: #C9A857;">30:1</div>
+                            <div class="analysis-label">Neo Mentor比例</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="legend-box">
+                    <div class="legend-title">图例说明</div>
+                    
+                    <div class="legend-section">
+                        <div class="legend-section-title">Tier 分类</div>
+                        <div class="tier-legend">
+                            <div class="tier-legend-item">
+                                <div class="tier-dot" style="background: #2D5A7B;"></div>
+                                <div class="tier-info">
+                                    <span class="tier-name">Tier 1</span>
+                                    <span class="tier-count">顶级体验 · 4</span>
+                                </div>
+                            </div>
+                            <div class="tier-legend-item">
+                                <div class="tier-dot" style="background: #5B8C5A;"></div>
+                                <div class="tier-info">
+                                    <span class="tier-name">Tier 1.5</span>
+                                    <span class="tier-count">强力驻地 · 5</span>
+                                </div>
+                            </div>
+                            <div class="tier-legend-item">
+                                <div class="tier-dot" style="background: #C9A857;"></div>
+                                <div class="tier-info">
+                                    <span class="tier-name">Tier 2</span>
+                                    <span class="tier-count">结构化 · 8</span>
+                                </div>
+                            </div>
+                            <div class="tier-legend-item">
+                                <div class="tier-dot" style="background: #C17B6E;"></div>
+                                <div class="tier-info">
+                                    <span class="tier-name">Tier 3</span>
+                                    <span class="tier-count">混合/虚拟 · 8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legend-section">
+                        <div class="legend-section-title">气泡大小 = 投资金额</div>
+                        <div class="size-legend">
+                            <div class="size-item">
+                                <div class="size-circle" style="width: 16px; height: 16px;"></div>
+                                <span class="size-text">$0-50K</span>
+                            </div>
+                            <div class="size-item">
+                                <div class="size-circle" style="width: 26px; height: 26px;"></div>
+                                <span class="size-text">$150K</span>
+                            </div>
+                            <div class="size-item">
+                                <div class="size-circle" style="width: 36px; height: 36px;"></div>
+                                <span class="size-text">$500K</span>
+                            </div>
+                            <div class="size-item">
+                                <div class="size-circle" style="width: 48px; height: 48px;"></div>
+                                <span class="size-text">$1M</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legend-section">
+                        <div class="legend-section-title">驻地强度</div>
+                        <div class="residency-legend">
+                            <div class="residency-item">
+                                <div class="residency-icon">
+                                    <div class="residency-outer"></div>
+                                    <div class="residency-inner"></div>
+                                </div>
+                                <span class="residency-text">强制全程驻地<br><span style="color: #A9A299; font-size: 8px;">需relocate到指定城市</span></span>
+                            </div>
+                            <div class="residency-item">
+                                <div class="residency-icon">
+                                    <div class="residency-inner"></div>
+                                </div>
+                                <span class="residency-text">推荐/部分驻地<br><span style="color: #A9A299; font-size: 8px;">虚拟为主或仅特定周</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legend-section">
+                        <div class="legend-section-title">适用阶段标记</div>
+                        <div style="font-size: 9px; color: #6B6560; line-height: 1.8;">
+                            <span class="stage-indicator">-1→0</span> 探索期（无idea）<br>
+                            <span class="stage-indicator">PRE-IDEA</span> 有方向无产品<br>
+                            <span class="stage-indicator">PRE-SEED</span> 正在building<br>
+                            <span class="stage-indicator">MVP</span> 有产品测试中<br>
+                            <span class="stage-indicator">0% EQ</span> 零股权项目
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="program-list-box">
+                    <div class="program-list-header">
+                        <span class="program-list-title">完整项目清单</span>
+                        <span class="program-list-count">25 Programs</span>
+                    </div>
+                    
+                    <div class="program-tier-group">
+                        <div class="program-tier-header">
+                            <span style="color: #2D5A7B;">● TIER 1</span>
+                            <div class="program-tier-line"></div>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #2D5A7B;"></div>
+                            <span class="program-name">Y Combinator</span>
+                            <span class="program-investment">$500K</span>
+                            <span class="program-meta">7%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #2D5A7B;"></div>
+                            <span class="program-name">HF0 Residency</span>
+                            <span class="program-investment">$1M</span>
+                            <span class="program-meta">5%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #2D5A7B;"></div>
+                            <span class="program-name">South Park Commons</span>
+                            <span class="program-investment">$1M</span>
+                            <span class="program-meta">7%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #2D5A7B;"></div>
+                            <span class="program-name">Neo</span>
+                            <span class="program-investment">$600K</span>
+                            <span class="program-meta">~6%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="program-tier-group">
+                        <div class="program-tier-header">
+                            <span style="color: #5B8C5A;">● TIER 1.5</span>
+                            <div class="program-tier-line"></div>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #5B8C5A;"></div>
+                            <span class="program-name">Founders Inc.</span>
+                            <span class="program-investment">$250K</span>
+                            <span class="program-meta">4-7%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #5B8C5A;"></div>
+                            <span class="program-name">a16z SPEEDRUN</span>
+                            <span class="program-investment">$1M</span>
+                            <span class="program-meta">10%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #5B8C5A;"></div>
+                            <span class="program-name">Conviction Embed</span>
+                            <span class="program-investment">$250K</span>
+                            <span class="program-meta">MFN</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #5B8C5A;"></div>
+                            <span class="program-name">Entrepreneur First</span>
+                            <span class="program-investment">$250K</span>
+                            <span class="program-meta">8-10%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #5B8C5A;"></div>
+                            <span class="program-name">PearX</span>
+                            <span class="program-investment">$500K</span>
+                            <span class="program-meta">Var.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="program-tier-group">
+                        <div class="program-tier-header">
+                            <span style="color: #C9A857;">● TIER 2</span>
+                            <div class="program-tier-line"></div>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C9A857;"></div>
+                            <span class="program-name">AI2 Incubator</span>
+                            <span class="program-investment">$600K</span>
+                            <span class="program-meta">~7%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C9A857;"></div>
+                            <span class="program-name">Antler</span>
+                            <span class="program-investment">$200K</span>
+                            <span class="program-meta">8.5%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C9A857;"></div>
+                            <span class="program-name">Roux Residency</span>
+                            <span class="program-investment">$25K</span>
+                            <span class="program-meta">0%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C9A857;"></div>
+                            <span class="program-name">Z Fellows</span>
+                            <span class="program-investment">$10K</span>
+                            <span class="program-meta">~0%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C9A857;"></div>
+                            <span class="program-name">500 Global</span>
+                            <span class="program-investment">$150K</span>
+                            <span class="program-meta">6%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C9A857;"></div>
+                            <span class="program-name">Techstars</span>
+                            <span class="program-investment">$220K</span>
+                            <span class="program-meta">5%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C9A857;"></div>
+                            <span class="program-name">Sequoia Arc</span>
+                            <span class="program-investment">$1M</span>
+                            <span class="program-meta">Var.</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C9A857;"></div>
+                            <span class="program-name">OpenAI Converge</span>
+                            <span class="program-investment">$500K</span>
+                            <span class="program-meta">Var.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="program-tier-group">
+                        <div class="program-tier-header">
+                            <span style="color: #C17B6E;">● TIER 3</span>
+                            <div class="program-tier-line"></div>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C17B6E;"></div>
+                            <span class="program-name">The Residency</span>
+                            <span class="program-investment">$0</span>
+                            <span class="program-meta">0%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C17B6E;"></div>
+                            <span class="program-name">On Deck SFP</span>
+                            <span class="program-investment">$125K</span>
+                            <span class="program-meta">2.5%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C17B6E;"></div>
+                            <span class="program-name">Prod</span>
+                            <span class="program-investment">$0</span>
+                            <span class="program-meta">0%</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C17B6E;"></div>
+                            <span class="program-name">AI Grant</span>
+                            <span class="program-investment">$250K</span>
+                            <span class="program-meta">MFN</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C17B6E;"></div>
+                            <span class="program-name">Soma Capital</span>
+                            <span class="program-investment">$100K</span>
+                            <span class="program-meta">MFN</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C17B6E;"></div>
+                            <span class="program-name">Village Global</span>
+                            <span class="program-investment">$100K</span>
+                            <span class="program-meta">Var.</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C17B6E;"></div>
+                            <span class="program-name">Accel Atoms</span>
+                            <span class="program-investment">$500K</span>
+                            <span class="program-meta">Var.</span>
+                        </div>
+                        <div class="program-item">
+                            <div class="program-dot" style="background: #C17B6E;"></div>
+                            <span class="program-name">LAUNCH</span>
+                            <span class="program-investment">$100K</span>
+                            <span class="program-meta">Var.</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="insights-box">
+                    <div class="insights-title">研究洞察</div>
+                    <div class="insight-item">
+                        真正具有residency性质的项目仅占市场<span class="insight-highlight">&lt;15%</span>，加速器生态正在经历重大换代与变革
+                    </div>
+                    <div class="insight-item">
+                        <span class="insight-highlight">HF0</span>（$1M/5%）和<span class="insight-highlight">SPC</span>（$1M/7%）代表了最founder-friendly的顶级条款
+                    </div>
+                    <div class="insight-item">
+                        Neo的mentor/company比例达<span class="insight-highlight">30:20</span>，远超YC的12:250+
+                    </div>
+                    <div class="insight-item">
+                        500 Global存在<span class="insight-highlight">$37.5K隐藏费用</span>，实际净投资仅$112.5K
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-left">
+                <div class="footer-title">研究方法</div>
+                <div class="footer-text">
+                    Tier分类基于Founder Experience综合评分，考虑社区质量、Program设计、Mentorship深度、物理空间体验、产品帮助等维度。
+                    数据来源包括各项目官网、创始人访谈、Boring Business Nerd、TechCrunch、Hacker News等。评估维度优先考虑创始人整体体验而非单纯投资回报率。
+                </div>
+            </div>
+            <div class="footer-right">
+                <div>Research Project</div>
+                <div>December 2025</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
