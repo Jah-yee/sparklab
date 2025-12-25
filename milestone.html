@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q4 关键里程碑 | Culture & Media</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            padding: 40px 60px;
+            min-height: 100vh;
+        }
+
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .header h2 {
+            font-size: 28px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .header h2 span {
+            color: #999;
+            font-weight: 300;
+        }
+
+        .objective {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            padding: 20px 24px;
+            margin-bottom: 40px;
+            font-size: 13px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .objective strong {
+            color: #1a1a1a;
+        }
+
+        .timeline-container {
+            position: relative;
+            padding: 0 0 60px 0;
+        }
+
+        /* 主时间轴 */
+        .main-timeline {
+            position: relative;
+            height: 3px;
+            background: #1a1a1a;
+            margin: 120px 0 100px 0;
+        }
+
+        .timeline-start, .timeline-end {
+            position: absolute;
+            top: -8px;
+            width: 3px;
+            height: 20px;
+            background: #1a1a1a;
+        }
+
+        .timeline-start { left: 0; }
+        .timeline-end { right: 0; }
+
+        /* 时间刻度 */
+        .time-markers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+        }
+
+        .time-marker {
+            position: absolute;
+            top: -6px;
+        }
+
+        .time-marker::before {
+            content: '';
+            display: block;
+            width: 2px;
+            height: 14px;
+            background: #1a1a1a;
+        }
+
+        .time-marker span {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        /* 当前位置 */
+        .current-marker {
+            position: absolute;
+            top: -20px;
+            width: 2px;
+            height: 44px;
+            background: #ff6b35;
+        }
+
+        .current-marker::after {
+            content: 'NOW';
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: #ff6b35;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* 轴标签 */
+        .axis-label {
+            position: absolute;
+            left: -120px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .axis-label small {
+            display: block;
+            font-size: 11px;
+            font-weight: 300;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* A轴 - 上方 */
+        .axis-a {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            right: 0;
+        }
+
+        .axis-a .axis-label {
+            top: 40px;
+        }
+
+        /* B轴 - 下方 */
+        .axis-b {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+        }
+
+        .axis-b .axis-label {
+            top: 20px;
+        }
+
+        /* 节点样式 */
+        .node {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .node-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            border: 2px solid #1a1a1a;
+        }
+
+        .node-dot.internal {
+            background: #1a1a1a;
+        }
+
+        .node-dot.external {
+            background: #ff6b35;
+            border-color: #ff6b35;
+        }
+
+        .node-dot.external::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #ff6b35;
+        }
+
+        .node-label {
+            font-size: 11px;
+            color: #444;
+            max-width: 120px;
+            text-align: center;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .node-date {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 6px;
+        }
+
+        /* A轴节点向上 */
+        .axis-a .node {
+            flex-direction: column-reverse;
+        }
+
+        .axis-a .node-label {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .axis-a .node-date {
+            margin-bottom: 0;
+            margin-top: 6px;
+        }
+
+        /* 任务条 */
+        .task-bar {
+            position: absolute;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            font-size: 11px;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .task-bar.primary {
+            background: #1a1a1a;
+        }
+
+        .task-bar.secondary {
+            background: #666;
+        }
+
+        .task-bar.tertiary {
+            background: transparent;
+            border: 1px dashed #999;
+            color: #666;
+        }
+
+        /* 图例 */
+        .legend {
+            display: flex;
+            gap: 32px;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.internal { background: #1a1a1a; }
+        .legend-dot.external { 
+            width: 0;
+            height: 0;
+            border-radius: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 10px solid #ff6b35;
+        }
+
+        /* OKR映射 */
+        .okr-mapping {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .okr-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            padding: 20px;
+        }
+
+        .okr-card h4 {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .okr-card h3 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .kr-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+        }
+
+        .kr-item:last-child {
+            border-bottom: none;
+        }
+
+        .kr-progress {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: #999;
+        }
+
+        .kr-progress.high { color: #2d7d46; }
+        .kr-progress.mid { color: #b8860b; }
+        .kr-progress.low { color: #c44; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Spark Lab · Q4 2024</h1>
+        <h2>关键里程碑 <span>Culture & Media</span></h2>
+    </div>
+
+    <div class="objective">
+        <strong>O：</strong>支持 SL 成为定义下一代风投标准的世界级玩家 → 搭建品牌一致性管理的基础框架，启动、调研、解释并一致品牌的视觉、语言与叙事体系
+    </div>
+
+    <div class="timeline-container">
+        <div class="main-timeline">
+            <div class="timeline-start"></div>
+            <div class="timeline-end"></div>
+            
+            <!-- 时间刻度 -->
+            <div class="time-markers">
+                <div class="time-marker" style="left: 0%;"><span>10.13</span></div>
+                <div class="time-marker" style="left: 25%;"><span>11.03</span></div>
+                <div class="time-marker" style="left: 48%;"><span>11.21</span></div>
+                <div class="time-marker" style="left: 75%;"><span>12.12</span></div>
+                <div class="time-marker" style="left: 85%;"><span>12.20</span></div>
+                <div class="time-marker" style="left: 90%;"><span>12.24</span></div>
+                <div class="time-marker" style="left: 100%;"><span>1.1</span></div>
+            </div>
+
+            <!-- 当前位置 12.25 -->
+            <div class="current-marker" style="left: 91%;"></div>
+
+            <!-- A轴：品牌资产梳理 -->
+            <div class="axis-a">
+                <div class="axis-label">
+                    A
+                    <small>品牌资产梳理</small>
+                </div>
+
+                <!-- 任务条 -->
+                <div class="task-bar primary" style="left: 0%; width: 48%; top: -60px;">
+                    建立标准（品牌资产库 + brandbook.pdf）
+                </div>
+                <div class="task-bar secondary" style="left: 25%; width: 50%; top: -28px;">
+                    把标准用起来（SOP & 培训交接）
+                </div>
+                <div class="task-bar tertiary" style="left: 75%; width: 25%; top: -60px;">
+                    持续品牌一致性支持
+                </div>
+
+                <!-- 节点 -->
+                <div class="node" style="left: 25%;">
+                    <div class="node-dot internal"></div>
+                    <div class="node-label">飞书品牌资产库<br/>brandbook 框架</div>
+                </div>
+
+                <div class="node" style="left: 48%;">
+                    <div class="node-dot internal"></div>
+                    <div class="node-label">brandbook.pdf<br/>Alan 第一次培训</div>
+                </div>
+
+                <div class="node" style="left: 75%;">
+                    <div class="node-dot internal"></div>
+                    <div class="node-label">培训会交接内部</div>
+                </div>
+            </div>
+
+            <!-- B轴：内容研究创作 -->
+            <div class="axis-b">
+                <div class="axis-label">
+                    B
+                    <small>内容研究创作</small>
+                </div>
+
+                <!-- 任务条 -->
+                <div class="task-bar primary" style="left: 0%; width: 48%; top: 50px;">
+                    探索内容实验室 vibe：选题会 & 素材库
+                </div>
+                <div class="task-bar secondary" style="left: 25%; width: 65%; top: 82px;">
+                    设计年底发布的炸圈小册子
+                </div>
+
+                <!-- 节点 -->
+                <div class="node" style="left: 48%; top: 0;">
+                    <div class="node-dot internal"></div>
+                    <div class="node-label">内容实验室立项</div>
+                </div>
+
+                <div class="node" style="left: 75%; top: 0;">
+                    <div class="node-dot internal"></div>
+                    <div class="node-label">确定第0期主概念</div>
+                </div>
+
+                <div class="node" style="left: 85%; top: 0;">
+                    <div class="node-dot external" style="position: relative;"></div>
+                    <div class="node-label" style="color: #ff6b35;">产品预热</div>
+                    <div class="node-date">12.20</div>
+                </div>
+
+                <div class="node" style="left: 90%; top: 0;">
+                    <div class="node-dot external" style="position: relative;"></div>
+                    <div class="node-label" style="color: #ff6b35;">线下发布</div>
+                    <div class="node-date">12.24</div>
+                </div>
+
+                <div class="node" style="left: 100%; top: 0;">
+                    <div class="node-dot external" style="position: relative;"></div>
+                    <div class="node-label" style="color: #ff6b35;">线上发售</div>
+                    <div class="node-date">1.1</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot internal"></div>
+                <span>内部交付节点</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot external"></div>
+                <span>外部发布节点</span>
+            </div>
+            <div class="legend-item">
+                <div style="width: 24px; height: 2px; background: #ff6b35;"></div>
+                <span>当前位置 (12.25)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="okr-mapping">
+        <div class="okr-card">
+            <h4>Culture</h4>
+            <h3>O2：品牌一致性管理基础框架</h3>
+            <div class="kr-item">
+                <span>KR1 品牌资产库 + 2次信息会</span>
+                <span class="kr-progress high">65%</span>
+            </div>
+            <div class="kr-item">
+                <span>KR2 线下物料≥10套 / 文案≥30条</span>
+                <span class="kr-progress mid">40%</span>
+            </div>
+            <div class="kr-item">
+                <span>KR3 优化 Inbound 路径 / 报名+30%</span>
+                <span class="kr-progress mid">35%</span>
+            </div>
+            <div class="kr-item">
+                <span>KR4 Brandbook 初稿（电子+印刷）</span>
+                <span class="kr-progress low">30%</span>
+            </div>
+        </div>
+
+        <div class="okr-card">
+            <h4>Media & MKT</h4>
+            <h3>O2：内容创作与发布体系</h3>
+            <div class="kr-item">
+                <span>KR1 𝕏 内容计划 / 月≥20条推文</span>
+                <span class="kr-progress mid">40%</span>
+            </div>
+            <div class="kr-item">
+                <span>KR2 内容PMF机制 / ≥3次选题会</span>
+                <span class="kr-progress high">60%</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
