@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Lab | Spark Lab</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0b;
+            min-height: 100vh;
+            color: #fff;
+            padding: 60px 40px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .main-title {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .main-title span {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #666;
+            -webkit-text-fill-color: #666;
+            margin-top: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 400;
+            margin-top: 20px;
+        }
+        
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        /* Card */
+        .card {
+            background: linear-gradient(145deg, #151517 0%, #0d0d0e 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 36px 32px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.12);
+            box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
+        }
+        
+        .card-number {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #333;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.5rem;
+        }
+        
+        .card-title-zh {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .card-title-en {
+            font-size: 0.85rem;
+            color: #555;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Color accents for each card */
+        .card:nth-child(1) .card-icon { background: rgba(255,107,53,0.15); color: #ff6b35; }
+        .card:nth-child(2) .card-icon { background: rgba(99,179,237,0.15); color: #63b3ed; }
+        .card:nth-child(3) .card-icon { background: rgba(154,230,180,0.15); color: #9ae6b4; }
+        .card:nth-child(4) .card-icon { background: rgba(246,173,85,0.15); color: #f6ad55; }
+        .card:nth-child(5) .card-icon { background: rgba(237,100,166,0.15); color: #ed64a6; }
+        .card:nth-child(6) .card-icon { background: rgba(129,140,248,0.15); color: #818cf8; }
+        .card:nth-child(7) .card-icon { background: rgba(252,211,77,0.15); color: #fcd34d; }
+        .card:nth-child(8) .card-icon { background: rgba(167,139,250,0.15); color: #a78bfa; }
+        
+        .card:nth-child(1):hover { border-color: rgba(255,107,53,0.3); }
+        .card:nth-child(2):hover { border-color: rgba(99,179,237,0.3); }
+        .card:nth-child(3):hover { border-color: rgba(154,230,180,0.3); }
+        .card:nth-child(4):hover { border-color: rgba(246,173,85,0.3); }
+        .card:nth-child(5):hover { border-color: rgba(237,100,166,0.3); }
+        .card:nth-child(6):hover { border-color: rgba(129,140,248,0.3); }
+        .card:nth-child(7):hover { border-color: rgba(252,211,77,0.3); }
+        .card:nth-child(8):hover { border-color: rgba(167,139,250,0.3); }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        
+        .footer-text {
+            font-size: 0.85rem;
+            color: #444;
+            letter-spacing: 0.05em;
+        }
+        
+        .footer-logo {
+            font-weight: 700;
+            color: #666;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 40px 20px;
+            }
+            
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                margin-bottom: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="main-title">
+                内容实验室
+                <span>Content Lab</span>
+            </h1>
+            <p class="subtitle">Eight Pillars of Narrative Architecture</p>
+        </header>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-number">01</div>
+                <div class="card-icon">◈</div>
+                <h2 class="card-title-zh">SL 世界观与标准</h2>
+                <p class="card-title-en">What we stand for</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-number">02</div>
+                <div class="card-icon">⌂</div>
+                <h2 class="card-title-zh">Residency 空间与生活系统</h2>
+                <p class="card-title-en">How we live</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-number">03</div>
+                <div class="card-icon">◎</div>
+                <h2 class="card-title-zh">个体效率与自我管理</h2>
+                <p class="card-title-en">How we work</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-number">04</div>
+                <div class="card-icon">⬡</div>
+                <h2 class="card-title-zh">城市与场所</h2>
+                <p class="card-title-en">Where we are</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-number">05</div>
+                <div class="card-icon">◇</div>
+                <h2 class="card-title-zh">内容与传播实验</h2>
+                <p class="card-title-en">How we tell</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-number">06</div>
+                <div class="card-icon">⬢</div>
+                <h2 class="card-title-zh">组织与社群增长</h2>
+                <p class="card-title-en">How we grow</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-number">07</div>
+                <div class="card-icon">◉</div>
+                <h2 class="card-title-zh">人物与访谈</h2>
+                <p class="card-title-en">Who we learn from</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-number">08</div>
+                <div class="card-icon">⬟</div>
+                <h2 class="card-title-zh">实验与研究</h2>
+                <p class="card-title-en">What we test</p>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p class="footer-text">NARRATIVE FRAMEWORK</p>
+            <p class="footer-logo">SPARK LAB</p>
+        </footer>
+    </div>
+</body>
+</html>

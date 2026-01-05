@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容实验室 Content Lab - 树状图</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Root Node */
+        .root-node {
+            background: #010101;
+            color: white;
+            border: 2px solid #010101;
+            padding: 40px 60px;
+            text-align: center;
+            width: fit-content;
+            margin: 0 auto;
+            box-shadow: 8px 8px 0px #666;
+        }
+        
+        .root-title {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+        }
+        
+        .root-subtitle {
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+        
+        /* Connector */
+        .connector-vertical {
+            width: 2px;
+            height: 50px;
+            background: #010101;
+            margin: 0 auto;
+        }
+        
+        .connector-horizontal {
+            height: 2px;
+            background: #010101;
+            margin: 0 60px;
+        }
+        
+        /* Branch Container */
+        .branch-container {
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .branch-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 60px;
+            right: 60px;
+            height: 2px;
+            background: #010101;
+        }
+        
+        /* Branch */
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 160px;
+        }
+        
+        .branch-line {
+            width: 2px;
+            height: 30px;
+            background: #010101;
+        }
+        
+        /* Leaf Node */
+        .leaf-node {
+            background: white;
+            border: 2px solid #010101;
+            padding: 20px 15px;
+            box-shadow: 4px 4px 0px #010101;
+            transition: all 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .leaf-node:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #010101;
+        }
+        
+        .leaf-number {
+            font-size: 11px;
+            font-weight: 700;
+            color: #010101;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        
+        .leaf-icon {
+            font-size: 20px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .leaf-title-zh {
+            font-size: 14px;
+            font-weight: 700;
+            color: #010101;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        
+        .leaf-title-en {
+            font-size: 10px;
+            font-weight: 500;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        .footer-logo {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #010101;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .branch-container {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .branch-container::before {
+                display: none;
+            }
+            
+            .branch {
+                max-width: calc(25% - 15px);
+            }
+            
+            .branch-line {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 800px) {
+            body {
+                padding: 20px;
+            }
+            
+            .root-node {
+                padding: 30px 40px;
+            }
+            
+            .root-title {
+                font-size: 28px;
+            }
+            
+            .branch {
+                max-width: calc(50% - 10px);
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .branch {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Root -->
+        <div class="root-node">
+            <h1 class="root-title">内容实验室</h1>
+            <p class="root-subtitle">Content Lab</p>
+        </div>
+        
+        <!-- Main Connector -->
+        <div class="connector-vertical"></div>
+        
+        <!-- Branches -->
+        <div class="branch-container">
+            <div class="branch">
+                <div class="branch-line"></div>
+                <div class="leaf-node">
+                    <div class="leaf-number">01</div>
+                    <span class="leaf-icon">✻</span>
+                    <h3 class="leaf-title-zh">SL 世界观与标准</h3>
+                    <p class="leaf-title-en">What we stand for</p>
+                </div>
+            </div>
+            
+            <div class="branch">
+                <div class="branch-line"></div>
+                <div class="leaf-node">
+                    <div class="leaf-number">02</div>
+                    <span class="leaf-icon">⌂</span>
+                    <h3 class="leaf-title-zh">Residency 空间与生活系统</h3>
+                    <p class="leaf-title-en">How we live</p>
+                </div>
+            </div>
+            
+            <div class="branch">
+                <div class="branch-line"></div>
+                <div class="leaf-node">
+                    <div class="leaf-number">03</div>
+                    <span class="leaf-icon">◎</span>
+                    <h3 class="leaf-title-zh">个体效率与自我管理</h3>
+                    <p class="leaf-title-en">How we work</p>
+                </div>
+            </div>
+            
+            <div class="branch">
+                <div class="branch-line"></div>
+                <div class="leaf-node">
+                    <div class="leaf-number">04</div>
+                    <span class="leaf-icon">◈</span>
+                    <h3 class="leaf-title-zh">城市与场所</h3>
+                    <p class="leaf-title-en">Where we are</p>
+                </div>
+            </div>
+            
+            <div class="branch">
+                <div class="branch-line"></div>
+                <div class="leaf-node">
+                    <div class="leaf-number">05</div>
+                    <span class="leaf-icon">◇</span>
+                    <h3 class="leaf-title-zh">内容与传播实验</h3>
+                    <p class="leaf-title-en">How we tell</p>
+                </div>
+            </div>
+            
+            <div class="branch">
+                <div class="branch-line"></div>
+                <div class="leaf-node">
+                    <div class="leaf-number">06</div>
+                    <span class="leaf-icon">⬡</span>
+                    <h3 class="leaf-title-zh">组织与社群增长</h3>
+                    <p class="leaf-title-en">How we grow</p>
+                </div>
+            </div>
+            
+            <div class="branch">
+                <div class="branch-line"></div>
+                <div class="leaf-node">
+                    <div class="leaf-number">07</div>
+                    <span class="leaf-icon">◉</span>
+                    <h3 class="leaf-title-zh">人物与访谈</h3>
+                    <p class="leaf-title-en">Who we learn from</p>
+                </div>
+            </div>
+            
+            <div class="branch">
+                <div class="branch-line"></div>
+                <div class="leaf-node">
+                    <div class="leaf-number">08</div>
+                    <span class="leaf-icon">△</span>
+                    <h3 class="leaf-title-zh">实验与研究</h3>
+                    <p class="leaf-title-en">What we test</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-logo">SPARK✻LAB</p>
+        </footer>
+    </div>
+</body>
+</html>
