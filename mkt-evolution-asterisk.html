@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKT 发展阶段 Marketing Evolution</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header Card */
+        .header-card {
+            background: white;
+            border: 2px solid #010101;
+            padding: 50px 40px;
+            margin-bottom: 30px;
+            box-shadow: 8px 8px 0px #010101;
+            text-align: center;
+        }
+        
+        .main-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #010101;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+        }
+        
+        .main-title-en {
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .asterisk-divider {
+            font-size: 18px;
+            color: #010101;
+            letter-spacing: 14px;
+            margin: 16px 0;
+        }
+        
+        .header-subtitle {
+            font-size: 13px;
+            color: #888;
+            letter-spacing: 1px;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            background: white;
+            border: 2px solid #010101;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 6px 6px 0px #010101;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .progress-stage {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            border: 2px solid #010101;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: white;
+            color: #010101;
+            min-width: 120px;
+            position: relative;
+        }
+        
+        .progress-stage.completed {
+            background: #010101;
+            color: white;
+        }
+        
+        .progress-stage.current {
+            background: white;
+            color: #010101;
+            border-width: 3px;
+        }
+        
+        .progress-stage.current::after {
+            content: '← 当前目标';
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #010101;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        
+        .progress-arrow {
+            color: #010101;
+            font-size: 16px;
+            font-weight: 300;
+        }
+        
+        /* Stage Grid */
+        .stage-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        /* Stage Card */
+        .stage-card {
+            background: white;
+            border: 2px solid #010101;
+            box-shadow: 6px 6px 0px #010101;
+            transition: all 0.2s ease;
+            display: grid;
+            grid-template-columns: 200px 1fr 280px;
+            min-height: 200px;
+        }
+        
+        .stage-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0px #010101;
+        }
+        
+        .stage-card.highlight {
+            border-width: 3px;
+        }
+        
+        .stage-card.completed {
+            opacity: 0.7;
+        }
+        
+        /* Stage Header (Left Column) */
+        .stage-header {
+            background: #010101;
+            color: white;
+            padding: 30px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 2px solid #010101;
+        }
+        
+        .stage-card.completed .stage-header {
+            background: #333;
+        }
+        
+        .stage-card.highlight .stage-header {
+            background: #010101;
+        }
+        
+        .stage-number {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            margin-bottom: 12px;
+        }
+        
+        .stage-title-zh {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+        
+        .stage-title-en {
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.7;
+            letter-spacing: 0.5px;
+        }
+        
+        .stage-keywords {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        
+        /* Stage Content (Middle Column) */
+        .stage-content {
+            padding: 28px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .content-section {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .content-block {
+            flex: 1;
+        }
+        
+        .content-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #010101;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .content-label::before {
+            content: "✻";
+            font-size: 9px;
+        }
+        
+        .content-list {
+            list-style: none;
+        }
+        
+        .content-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 13px;
+            color: #444;
+            line-height: 1.4;
+        }
+        
+        .content-bullet {
+            width: 5px;
+            height: 5px;
+            background: #010101;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+        
+        .content-text {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.5;
+        }
+        
+        .sub-list {
+            margin-left: 13px;
+            margin-top: 4px;
+        }
+        
+        .sub-item {
+            font-size: 12px;
+            color: #666;
+            padding: 3px 0;
+        }
+        
+        /* Stage Sidebar (Right Column) */
+        .stage-sidebar {
+            background: #f8f8f8;
+            padding: 28px 24px;
+            border-left: 2px solid #010101;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .sidebar-block {
+        }
+        
+        .sidebar-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #010101;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .kpi-list {
+            list-style: none;
+        }
+        
+        .kpi-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            background: white;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .kpi-bullet {
+            width: 4px;
+            height: 4px;
+            background: #010101;
+        }
+        
+        .risk-box {
+            background: white;
+            border: 2px solid #010101;
+            padding: 14px 16px;
+        }
+        
+        .risk-box.warning {
+            border-left: 4px solid #010101;
+        }
+        
+        .risk-box.target {
+            background: #010101;
+            color: white;
+        }
+        
+        .risk-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .risk-content {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .risk-content ul {
+            list-style: none;
+            margin-top: 6px;
+        }
+        
+        .risk-content li {
+            padding: 3px 0;
+            padding-left: 12px;
+            position: relative;
+        }
+        
+        .risk-content li::before {
+            content: "·";
+            position: absolute;
+            left: 0;
+            font-weight: 700;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 12px;
+        }
+        
+        .status-badge.done {
+            background: #010101;
+            color: white;
+        }
+        
+        .status-badge.in-progress {
+            background: white;
+            color: #010101;
+            border: 2px solid #010101;
+        }
+        
+        /* Footer */
+        .main-footer {
+            background: #010101;
+            border: 2px solid #010101;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .footer-logo {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 4px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .stage-card {
+                grid-template-columns: 1fr;
+            }
+            
+            .stage-header {
+                border-right: none;
+                border-bottom: 2px solid #010101;
+            }
+            
+            .stage-sidebar {
+                border-left: none;
+                border-top: 2px solid #010101;
+            }
+            
+            .progress-bar {
+                flex-direction: column;
+            }
+            
+            .progress-stage {
+                width: 100%;
+            }
+            
+            .progress-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .progress-stage.current::after {
+                bottom: auto;
+                right: -80px;
+                left: auto;
+                transform: none;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+            
+            .main-title {
+                font-size: 28px;
+            }
+            
+            .header-card {
+                padding: 30px 20px;
+            }
+            
+            .content-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header-card">
+            <h1 class="main-title">MKT 发展阶段</h1>
+            <p class="main-title-en">Content-driven Marketing Evolution</p>
+            <div class="asterisk-divider">✻ ✻ ✻</div>
+            <p class="header-subtitle">从零散执行到品牌影响力的五阶段跃迁</p>
+        </header>
+        
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-stage completed">STAGE 0<br/>零散执行期</div>
+            <span class="progress-arrow">→</span>
+            <div class="progress-stage completed">STAGE 1<br/>内容冷启动</div>
+            <span class="progress-arrow">→</span>
+            <div class="progress-stage current">STAGE 2<br/>内容引擎期</div>
+            <span class="progress-arrow">→</span>
+            <div class="progress-stage">STAGE 3<br/>增长驱动期</div>
+            <span class="progress-arrow">→</span>
+            <div class="progress-stage">STAGE 4<br/>品牌影响力</div>
+        </div>
+        
+        <!-- Stage Cards -->
+        <div class="stage-grid">
+            
+            <!-- Stage 0 -->
+            <div class="stage-card completed">
+                <div class="stage-header">
+                    <div class="stage-number">STAGE 0</div>
+                    <h2 class="stage-title-zh">零散执行期</h2>
+                    <p class="stage-title-en">Ad-hoc Marketing</p>
+                    <div class="stage-keywords">被动 · 碎片化 · 救火</div>
+                </div>
+                
+                <div class="stage-content">
+                    <div class="content-section">
+                        <div class="content-block">
+                            <div class="content-label">内容来源</div>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>灵感 / 临时需求</li>
+                                <li class="content-item"><span class="content-bullet"></span>老板一句话</li>
+                            </ul>
+                        </div>
+                        <div class="content-block">
+                            <div class="content-label">产出特征</div>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>偶尔有内容</li>
+                                <li class="content-item"><span class="content-bullet"></span>没有节奏</li>
+                                <li class="content-item"><span class="content-bullet"></span>无法复用</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="content-section">
+                        <div class="content-block">
+                            <div class="content-label">工具</div>
+                            <p class="content-text">几乎没有，或仅用于存文件</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stage-sidebar">
+                    <div class="sidebar-block">
+                        <div class="sidebar-label">KPI</div>
+                        <ul class="kpi-list">
+                            <li class="kpi-item"><span class="kpi-bullet"></span>不存在</li>
+                            <li class="kpi-item"><span class="kpi-bullet"></span>或只看"发没发"</li>
+                        </ul>
+                    </div>
+                    <div class="risk-box warning">
+                        <div class="risk-label">⚠️ 风险</div>
+                        <div class="risk-content">
+                            <ul>
+                                <li>团队疲劳但无积累</li>
+                                <li>内容不可复制</li>
+                                <li>人一走，系统归零</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stage 1 -->
+            <div class="stage-card completed">
+                <div class="stage-header">
+                    <div class="stage-number">STAGE 1</div>
+                    <h2 class="stage-title-zh">内容冷启动期</h2>
+                    <p class="stage-title-en">Content Cold Start</p>
+                    <div class="stage-keywords">试探 · 验证 · 找感觉</div>
+                    <span class="status-badge done">✓ 已完成</span>
+                </div>
+                
+                <div class="stage-content">
+                    <div class="content-section">
+                        <div class="content-block">
+                            <div class="content-label">核心目标</div>
+                            <p class="content-text">内容开始有意识地产出，验证：</p>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>哪些话题有人看</li>
+                                <li class="content-item"><span class="content-bullet"></span>哪些形式能跑通</li>
+                            </ul>
+                        </div>
+                        <div class="content-block">
+                            <div class="content-label">阶段特征</div>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>有"爆"的幻想，但更多是探索</li>
+                                <li class="content-item"><span class="content-bullet"></span>个体能力 > 系统能力</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stage-sidebar">
+                    <div class="sidebar-block">
+                        <div class="sidebar-label">KPI</div>
+                        <ul class="kpi-list">
+                            <li class="kpi-item"><span class="kpi-bullet"></span>发布量</li>
+                            <li class="kpi-item"><span class="kpi-bullet"></span>初级互动（点赞、收藏）</li>
+                        </ul>
+                    </div>
+                    <div class="risk-box">
+                        <div class="risk-label">📍 完成标志</div>
+                        <div class="risk-content">
+                            小红书 12 月 5 篇内容 + 工具初步搭建
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stage 2 -->
+            <div class="stage-card highlight">
+                <div class="stage-header">
+                    <div class="stage-number">STAGE 2</div>
+                    <h2 class="stage-title-zh">内容引擎期</h2>
+                    <p class="stage-title-en">Content Engine</p>
+                    <div class="stage-keywords">系统 · 稳定 · 可预期</div>
+                    <span class="status-badge in-progress">🎯 当前目标</span>
+                </div>
+                
+                <div class="stage-content">
+                    <div class="content-section">
+                        <div class="content-block">
+                            <div class="content-label">内容结构化</div>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>主线 / 系列 / 栏目</li>
+                                <li class="content-item"><span class="content-bullet"></span>明确选题标准</li>
+                                <li class="content-item"><span class="content-bullet"></span>明确内容调性</li>
+                                <li class="content-item"><span class="content-bullet"></span>明确审核规则</li>
+                            </ul>
+                        </div>
+                        <div class="content-block">
+                            <div class="content-label">典型特征</div>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>能稳定达成周更/月更目标</li>
+                                <li class="content-item"><span class="content-bullet"></span>内容质量开始趋于稳定</li>
+                                <li class="content-item"><span class="content-bullet"></span>新人可以"照 SOP 产出"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="content-section">
+                        <div class="content-block">
+                            <div class="content-label">核心转变</div>
+                            <p class="content-text">SOP 开始真正"接管人"</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stage-sidebar">
+                    <div class="sidebar-block">
+                        <div class="sidebar-label">KPI</div>
+                        <ul class="kpi-list">
+                            <li class="kpi-item"><span class="kpi-bullet"></span>稳定发布率</li>
+                            <li class="kpi-item"><span class="kpi-bullet"></span>基础留存指标</li>
+                            <li class="kpi-item"><span class="kpi-bullet"></span>协作效率（delay、返工率）</li>
+                        </ul>
+                    </div>
+                    <div class="risk-box target">
+                        <div class="risk-label">🎯 选题会的真实目标</div>
+                        <div class="risk-content">
+                            把团队从 Stage 1 → Stage 2
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stage 3 -->
+            <div class="stage-card">
+                <div class="stage-header">
+                    <div class="stage-number">STAGE 3</div>
+                    <h2 class="stage-title-zh">增长驱动期</h2>
+                    <p class="stage-title-en">Growth-driven Marketing</p>
+                    <div class="stage-keywords">增长 · 反馈 · 实验</div>
+                </div>
+                
+                <div class="stage-content">
+                    <div class="content-section">
+                        <div class="content-block">
+                            <div class="content-label">内容定位转变</div>
+                            <p class="content-text">内容不再只是"输出"，而是增长杠杆</p>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>每个内容都有假设</li>
+                                <li class="content-item"><span class="content-bullet"></span>每个内容都有指标</li>
+                                <li class="content-item"><span class="content-bullet"></span>每个内容都有复盘</li>
+                            </ul>
+                        </div>
+                        <div class="content-block">
+                            <div class="content-label">内容分层</div>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>Growth Content</li>
+                                <li class="content-item"><span class="content-bullet"></span>Brand Content</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="content-section">
+                        <div class="content-block">
+                            <div class="content-label">能力跃迁点</div>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>A/B 测试内容结构</li>
+                                <li class="content-item"><span class="content-bullet"></span>不同渠道差异化分发</li>
+                                <li class="content-item"><span class="content-bullet"></span>数据反向影响选题</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stage-sidebar">
+                    <div class="sidebar-block">
+                        <div class="sidebar-label">KPI</div>
+                        <ul class="kpi-list">
+                            <li class="kpi-item"><span class="kpi-bullet"></span>增长指标（关注、转化、线索）</li>
+                            <li class="kpi-item"><span class="kpi-bullet"></span>单内容 ROI</li>
+                            <li class="kpi-item"><span class="kpi-bullet"></span>渠道效率对比</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stage 4 -->
+            <div class="stage-card">
+                <div class="stage-header">
+                    <div class="stage-number">STAGE 4</div>
+                    <h2 class="stage-title-zh">品牌影响力期</h2>
+                    <p class="stage-title-en">Brand & Influence</p>
+                    <div class="stage-keywords">心智 · 代表作 · 影响力</div>
+                </div>
+                
+                <div class="stage-content">
+                    <div class="content-section">
+                        <div class="content-block">
+                            <div class="content-label">内容成为品牌资产</div>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>可被引用的观点</li>
+                                <li class="content-item"><span class="content-bullet"></span>被模仿的内容形式</li>
+                            </ul>
+                        </div>
+                        <div class="content-block">
+                            <div class="content-label">MKT 角色转变</div>
+                            <p class="content-text">不再只是"支持部门"，而是：</p>
+                            <ul class="content-list">
+                                <li class="content-item"><span class="content-bullet"></span>品牌定义者</li>
+                                <li class="content-item"><span class="content-bullet"></span>叙事主导者</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stage-sidebar">
+                    <div class="sidebar-block">
+                        <div class="sidebar-label">KPI</div>
+                        <ul class="kpi-list">
+                            <li class="kpi-item"><span class="kpi-bullet"></span>品牌搜索量</li>
+                            <li class="kpi-item"><span class="kpi-bullet"></span>自传播率</li>
+                            <li class="kpi-item"><span class="kpi-bullet"></span>媒体 / 社群引用</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p class="footer-text">Content-driven Marketing Framework</p>
+            <p class="footer-logo">SPARK✻LAB</p>
+        </footer>
+    </div>
+</body>
+</html>
